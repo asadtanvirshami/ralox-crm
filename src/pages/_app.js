@@ -8,9 +8,12 @@ import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Loader from "@/components/Shared/Loader";
 import Layout from "@/components/Shared/Layout";
+import { Provider as JotaiProvider } from "jotai";
 
 export default function App({ Component, pageProps: { ...pageProps } }) {
   const [loading, setLoading] = useState(false);
+  const [defaultLayout, setDefaultLayout] = useState([10, 10, 10, 10]);
+  const [defaultCollapsed, setDefaultCollapsed] = useState(true);
   const router = useRouter();
   const queryClient = new QueryClient();
 
@@ -24,26 +27,38 @@ export default function App({ Component, pageProps: { ...pageProps } }) {
         router.pathname !== "/reset" && (
           <>
             {loading ? (
-              <Layout>
+              <Layout
+                defaultLayout={defaultLayout}
+                setDefaultLayout={setDefaultLayout}
+                defaultCollapsed={defaultCollapsed}
+                setDefaultCollapsed={setDefaultCollapsed}
+              >
                 <Loader />
               </Layout>
             ) : (
-              <QueryClientProvider client={queryClient}>
-                <Layout>
-                  <Component {...pageProps} />
-                  <Toaster />
-                </Layout>
-              </QueryClientProvider>
+              <JotaiProvider>
+                <QueryClientProvider client={queryClient}>
+                  <Layout
+                    defaultLayout={defaultLayout}
+                    defaultCollapsed={defaultCollapsed}
+                  >
+                    <Component {...pageProps} />
+                    <Toaster />
+                  </Layout>
+                </QueryClientProvider>
+              </JotaiProvider>
             )}
           </>
         )}
       {(router.pathname === "/" ||
         router.pathname === "/auth" ||
         router.pathname === "/reset") && (
-        <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
-          <Toaster />
-        </QueryClientProvider>
+        <JotaiProvider>
+          <QueryClientProvider client={queryClient}>
+            <Component {...pageProps} />
+            <Toaster />
+          </QueryClientProvider>
+        </JotaiProvider>
       )}
     </>
   );

@@ -72,7 +72,7 @@ const Graph = (props) => {
             <CartesianGrid
               horizontal={false}
               strokeWidth="0.2"
-              stroke="#ED213A"
+              stroke="black"
             />
             <XAxis
               dataKey="name"
@@ -86,7 +86,7 @@ const Graph = (props) => {
               activeDot={false}
               type="monotone"
               dataKey="expectedRevenue"
-              stroke="#3486eb"
+              stroke="lightgreen"
               strokeWidth="3"
               dot={false}
               strokeDasharray="8 8"
@@ -94,7 +94,7 @@ const Graph = (props) => {
             <Line
               type="monotone"
               dataKey="revenue"
-              stroke="#3486eb"
+              stroke="lightgreen"
               strokeWidth="4"
               dot={false}
             />

@@ -1,137 +1,87 @@
-import React, { useRef } from "react";
-import { useRouter } from "next/router";
-import classNames from "classnames";
+"use client";
+
 import Link from "next/link";
-//****Icon-imports****
+import { LucideIcon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 import {
-  HiOutlineChevronDoubleRight,
-  HiOutlineChevronDoubleLeft,
-  HiOutlineCog8Tooth,
-  HiOutlineWindow,
-  HiOutlineChartBarSquare,
-  HiOutlineArrowRightOnRectangle,
-  HiChartBar,
-  HiChatBubbleBottomCenter,
-  HiChatBubbleOvalLeft,
-  HiOutlineChatBubbleOvalLeft,
-} from "react-icons/hi2";
-//****Components****
-import MenuItems from "./menuItems";
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import React from "react";
 
-//add NavItem prop to component prop
-const Sidebar = ({ collapsed, setCollapsed }) => {
-  const router = useRouter();
-
-  const adminMenu = [
-    { id: 0, text: "Dashboard", link: "/dashboard", svg: HiOutlineWindow },
-    { id: 1, text: "Stats", link: "/", svg: HiOutlineChartBarSquare },
-    { id: 6, text: "Settings", link: "/setting", svg: HiOutlineCog8Tooth },
-    { id: 6, text: "Chat", link: "/chat", svg: HiOutlineChatBubbleOvalLeft },
-  ];
-
-  const Icon = collapsed
-    ? HiOutlineChevronDoubleRight
-    : HiOutlineChevronDoubleLeft;
+function Nav({ links, isCollapsed }) {
+  const [isServer, setIsServer] = React.useState(true);
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsServer(false);
+    }
+  }, []);
   return (
     <div
-      className={classNames({
-        "borderrounded-t-3xl fixed md:static md:translate-x-0 z-20 ": true,
-        "transition-all duration-300 ease-in-out": false,
-        "w-[200px]": !collapsed,
-        "w-16": collapsed,
-      })}
+      data-collapsed={isCollapsed}
+      className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2"
     >
-      <div
-        className={classNames({
-          " flex flex-col justify-between h-screen sticky inset-0 w-full  ": true,
-        })}
-      >
-        {/* logo and collapse button */}
-        <div
-          className={classNames({
-            "flex items-center  border-gray-200 transition-none": true,
-            "p-4 justify-between": !collapsed,
-            "py-4 justify-center": collapsed,
-          })}
-        >
-          {!collapsed && (
-            <span className="whitespace-nowrap font-semibold">
-              Administrator
-            </span>
-          )}
-          <button
-            className="grid place-content-center hover:bg-slate-400 hover:text-white w-10 h-10 rounded-full opacity-0 md:opacity-100"
-            onClick={() => setCollapsed(!collapsed)}
-          >
-            <Icon className="w-5 h-5" />
-          </button>
-        </div>
-        <nav className="flex-grow">
-          <ul
-            className={classNames({
-              "my-2 flex flex-col gap-2 items-stretch": true,
-            })}
-          >
-            <ul
-              className={classNames({
-                "my-2 flex flex-col gap-2 items-stretch": true,
-              })}
-            >
-              {adminMenu.map((menu_, i) => {
-                return (
-                  <>
-                    <MenuItems collapsed={collapsed} menu_={menu_} />
-                  </>
-                );
-              })}
-            </ul>
-          </ul>
-        </nav>
-        <div
-          className={classNames({
-            "grid place-content-stretch p-4 ": true,
-          })}
-        >
-          <div className="flex gap-4 items-center h-12 max-w-full overflow-hidden">
-            {/* <User
-              className="w-6 h-6 text-gray-500 hover:text-gray-900 transition duration-75"
-              fill={"#fff"}
-              src={User}
-            /> */}
-            {/* <IconButton
-              color="red"
-              ripple={true}
-              variant="gradient"
-              className={
-                collapsed
-                  ? "rounded-full hover:shadow-none w-8 h-8 transition duration-75"
-                  : "rounded-full hover:shadow-none "
-              }
-            >
-              {/* <span> {name?.charAt(0).toUpperCase()}</span> */}
-            {/* <span> {'Johnathan Clark'}</span */}
-            {/* </IconButton> */}
-            {!collapsed && (
-              <div className="=flex items-center h-full sm:justify-center xl:justify-start ">
-                <div className=" sm:hidden xl:block font-bold text-white">
-                  {/* {name?.toUpperCase("0")} */}
-                </div>
-                <Link href="." className="color-white text-sm">
-                  View Profile
+      <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
+        {links.map((link, index) =>
+          isCollapsed ? (
+            <Tooltip key={index} delayDuration={0}>
+              <TooltipTrigger asChild>
+                <Link
+                  href="#"
+                  className={cn(
+                    buttonVariants({ variant: link.variant, size: "icon" }),
+                    "h-9 w-9",
+                    link.variant === "default" &&
+                      "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
+                  )}
+                >
+                  <link.icon className="h-4 w-4" />
+                  <span className="sr-only">{link.title}</span>
                 </Link>
-                <button className="float-right">
-                  <HiOutlineArrowRightOnRectangle
-                    className="block sm:hidden xl:block w-6 h-5 ml-28"
-                    fill={"#fff"}
-                  />
-                </button>
-                <div className="flex-grow block sm:hidden xl:block" />
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="flex items-center gap-4">
+                {link.title}
+                {link.label && (
+                  <span className="ml-auto text-muted-foreground ">
+                    {link.label}
+                  </span>
+                )}
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <Link
+              key={index}
+              href={link.href}
+              className={cn(
+                buttonVariants({ variant: link.variant, size: "sm" }),
+                link.variant === "default" &&
+                  "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
+                "justify-start "
+              )}
+            >
+              <link.icon className="mr-2 h-4 w-4" />
+              <span className="">{link.title}</span>
+              {link.label && (
+                <span
+                  className={cn(
+                    "ml-auto ",
+                    !isServer &&
+                      window.location.pathname === link.href &&
+                      "text-background dark:text-white "
+                  )}
+                >
+                  {link.label}
+                </span>
+              )}
+            </Link>
+          )
+        )}
+      </nav>
     </div>
   );
-};
-export default React.memo(Sidebar);
+}
+
+export default React.memo(Nav);

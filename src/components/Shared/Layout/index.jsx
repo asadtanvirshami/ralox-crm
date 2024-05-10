@@ -1,38 +1,153 @@
 import React, { useState } from "react";
 import classNames from "classnames";
-//****Components****
-import { Toaster } from "@/components/ui/toaster"
-import OffCanvas from "../OffCanvas";
+//*Components*
+import { Toaster } from "@/components/ui/toaster";
+import Nav from "../OffCanvas";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import {
+  AlertCircle,
+  AlignLeft,
+  AlignRight,
+  Archive,
+  ArchiveX,
+  File,
+  CalendarCheck,
+  Globe,
+  LayoutDashboard,
+  MessagesSquare,
+  Search,
+  Send,
+  ShoppingCart,
+  Trash2,
+  Users2,
+  UsersRound,
+  LineChart,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
-const Layout = ({ children }) => {
-  const [collapsed, setSidebarCollapsed] = useState(false);
-
+const Layout = ({ children, defaultLayout, navCollapsedSize = 4 }) => {
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
   return (
     <>
-      <div
-        className={classNames({
-          // use grid layout
-          "grid min-h-screen": true,
-          // toggle the width of the sidebar depending on the state
-          "grid-cols-sidebar": !collapsed,
-          "grid-cols-sidebar-collapsed": collapsed,
-          // transition animation classes
-          "transition-[grid-template-columns] duration-300 ease-in-out": true,
-        })}
-      >
-        {/* sidebar */}
-        {/* <div className="bg-gradient-to-r border from-slate-300 to-white shadow-lg text-red"> */}
-        <div className="bg-white text-theme-700 border border-none shadow-lg">
-          <OffCanvas
-            collapsed={collapsed}
-            setCollapsed={() => setSidebarCollapsed((prev) => !prev)}
-          />
-        </div>
-        {/* content */}
-        <div className=" h-screen flex-grow overflow-x-hidden overflow-auto flex-wrap content-start w-full">
-          {children}
-        </div>
-      </div>
+      <TooltipProvider delayDuration={0}>
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="h-full items-stretch w-full"
+        >
+          <ResizablePanel
+            defaultSize={defaultLayout[0]}
+            collapsedSize={navCollapsedSize}
+            collapsible={false}
+            onCollapse={() => setIsCollapsed((prev) => !prev)}
+            className={cn(
+              isCollapsed &&
+                " max-w-[50px] md:max-w-[70px] lg:max-w-[50px] transition-all duration-300 ease-in-out",
+              !isCollapsed &&
+                "min-w-[50px] max-w-[150px] transition-all duration-300 ease-in-out"
+            )}
+          >
+            <div
+              className={cn(
+                "flex h-[52px] items-center ",
+                isCollapsed
+                  ? "h-[52px] justify-center "
+                  : "px-2 justify-between text-xl"
+              )}
+            >
+              <h3 className={` transition-all duration-300 ease-in-out `}>
+                {!isCollapsed && "Ralox"}
+                {isCollapsed && ""}
+              </h3>
+
+              <div className="">
+                <div className="rounded-full px-2 bg-sky-500 w-full h-8 justify-center items-center align-middle flex ">
+                  {isCollapsed && (
+                    <AlignLeft
+                      size={20}
+                      color="white"
+                      className=" cursor-pointer"
+                      onClick={() => {
+                        setIsCollapsed((prev) => !prev);
+                      }}
+                    />
+                  )}
+                  {!isCollapsed && (
+                    <AlignRight
+                      size={20}
+                      color="white"
+                      className=" cursor-pointer"
+                      onClick={() => {
+                        setIsCollapsed((prev) => !prev);
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+            <Separator />
+            <Nav
+              isCollapsed={isCollapsed}
+              setIsCollapsed={setIsCollapsed}
+              links={[
+                {
+                  title: "Dashboard",
+                  label: "128",
+                  icon: LayoutDashboard,
+                  variant: "default",
+                  href: "/dashboard",
+                },
+                {
+                  title: "Users",
+                  label: "9",
+                  icon: UsersRound,
+                  variant: "ghost",
+                  href: "/users",
+                },
+              ]}
+            />
+            <Separator />
+            <Nav
+              isCollapsed={isCollapsed}
+              setIsCollapsed={setIsCollapsed}
+              links={[
+                {
+                  title: "Attendance",
+                  label: "972",
+                  icon: CalendarCheck,
+                  variant: "ghost",
+                  href: "/attendance",
+                },
+                {
+                  title: "Sales",
+                  label: "972",
+                  icon: LineChart,
+                  variant: "ghost",
+                  href: "/sales",
+                },
+                {
+                  title: "Web Admin",
+                  label: "972",
+                  icon: Globe,
+                  variant: "ghost",
+                  href: "/users",
+                },
+              ]}
+            />
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel defaultSize={defaultLayout[1]}>
+            {children}
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </TooltipProvider>
+
       <Toaster />
     </>
   );

@@ -2,8 +2,8 @@ import React, { Fragment, useState, useRef } from "react";
 
 // Component Imports
 import Link from "next/link";
-import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { HiPencilSquare, HiTrash } from "react-icons/hi2";
+// import { PlusCircledIcon } from "@radix-ui/react-icons";
+// import { HiPencilSquare, HiTrash } from "react-icons/hi2";
 
 const InfoCard = ({
   label,
@@ -173,10 +173,10 @@ const InfoCard = ({
           <div className="flex justify-between items-center">
             <div className="text-theme-700 font-bold font-body">{title}</div>
             <div className="text-theme-700 font-bold ">
-              <PlusCircledIcon
+              {/* <PlusCircledIcon
                 onClick={() => setOpen((prev) => !prev)}
                 className="w-6 h-6 text-gray-500 cursor-pointer"
-              />
+              /> */}
             </div>
           </div>
           <div className="font-body">{label}</div>

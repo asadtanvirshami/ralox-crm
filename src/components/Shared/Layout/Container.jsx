@@ -1,8 +1,10 @@
 import React from "react";
+import InfoSection from "./InfoSection";
 
 function Container({ children }) {
   return (
-    <div className="mx-auto px-3 sm:px-6 container ">
+    <div className=" container w-full">
+      <InfoSection />
       <>{children}</>
     </div>
   );

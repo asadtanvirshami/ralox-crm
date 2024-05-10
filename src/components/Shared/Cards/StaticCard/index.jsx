@@ -2,7 +2,7 @@ import React from "react";
 
 const StaticCard = ({ title, amount, className,icon }) => {
   return (
-    <div className="w-full p-2 lg:w-1/3">
+    <div className="w-full p-2">
       <div
         className={`rounded-lg ${className} shadow-lg flex justify-between p-3 h-32 `}
       >

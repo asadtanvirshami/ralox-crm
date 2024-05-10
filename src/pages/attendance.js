@@ -1,9 +1,12 @@
-import React from 'react'
+import Attendance from "../../src/components/layout/attendance/";
+import React from "react";
 
 const attendance = () => {
   return (
-    <div>attendance</div>
-  )
-}
+    <div>
+      <Attendance />
+    </div>
+  );
+};
 
-export default attendance
+export default attendance;

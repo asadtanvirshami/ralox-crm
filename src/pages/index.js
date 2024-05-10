@@ -28,7 +28,7 @@ export default function Landing() {
           <meta name="description" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <div className="flex align-middle justify-center grid items-center justify-center h-screen w-screen bg-gradient-to-r from-rose-500 to-orange-500 ">
+        <div className="flex align-middle justify-center items-center h-screen w-screen bg-gradient-to-r from-sky-500 to-sky-500 ">
           <Loader />
         </div>
       </div>

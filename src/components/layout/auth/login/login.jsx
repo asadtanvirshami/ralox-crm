@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import { useMutation } from "react-query";
 
-import { jwtDecode } from "jwt-decode";
+import jwt_decode from "jwt-decode";
 import { useRouter } from "next/router";
 import { PulseLoader } from "react-spinners";
 import Cookies from "js-cookie";
@@ -32,21 +32,27 @@ const Login = () => {
         description: "Please wait...",
         duration: 900,
       });
-      let jwtToken = jwtDecode(response?.data?.token);
+
+      let jwtToken = jwt_decode(response?.data?.token);
+
       const userCache = {
-        id: response?.data?.id,
-        id: response?.data?.name,
-        id: response?.data?.email,
-        id: response?.data?.createdAt,
-        id: response?.data?.updatedAt,
+        id: jwtToken?.id,
+        name: jwtToken?.name,
+        email: jwtToken?.email,
+        designation: jwtToken?.designation,
+        createdAt: jwtToken?.createdAt,
+        updatedAt: jwtToken?.updatedAt,
+        checkedIn: false,
+        isAdmin: false,
+        lastCheckedIn: null,
       };
-      if (response?.data?.token) {
-        Cookies.set("user", userCache);
-        Cookies.set("token", jwtToken);
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 1000);
-      }
+
+      Cookies.set("user", JSON.stringify(userCache), { expires: 1 });
+      Cookies.set("token", JSON.stringify(jwtToken), { expires: 1 });
+
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
     } else {
       return undefined;
     }
@@ -64,6 +70,7 @@ const Login = () => {
     mutate: authMutation,
     isLoading,
     isError,
+    isSuccess,
   } = useMutation(loginUser, {
     onError: (error) => {
       toast({
@@ -112,6 +119,7 @@ const Login = () => {
             <div className="text-left mb-4 ml-2 mt-5 flex justify-between items-center">
               <button
                 type="submit"
+                disabled={isSuccess || isLoading ? true : false}
                 className={`p-[6px] rounded-md bg-theme-700  text-white font-semibold ${
                   isLoading ? "hover:" : "hover:bg-white"
                 } hover:text-sky-600 `}
