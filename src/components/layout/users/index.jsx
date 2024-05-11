@@ -1,14 +1,12 @@
 import React, { Fragment, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import UserCE from "@/components/Shared/Forms/User/UserCE";
-import { Input } from "@/components/ui/input";
 
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { MoonLoader } from "react-spinners";
 import { userDeleteRequest, userGetRequest } from "@/api/auth";
 import { toast } from "@/components/ui/use-toast";
 import DataTable from "@/components/Shared/Table/Users/DataTable";
 import { columns } from "@/components/Shared/Table/Users/Columns";
+import UserCE from "@/components/Shared/Forms/User/UserCE";
 
 const Users = () => {
   const queryClient = useQueryClient();
@@ -47,6 +45,10 @@ const Users = () => {
       });
     },
   });
+
+  const deleteUser = (id) => {
+   const user = deleteUserMutation(id);
+  };
 
   return (
     <Fragment>

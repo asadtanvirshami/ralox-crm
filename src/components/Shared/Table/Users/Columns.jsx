@@ -1,21 +1,14 @@
+import React, { useContext } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ComponentDialog } from "../../Dialog";
-import Map from "../../Map";
+
+import UserCE from "../../Forms/User/UserCE";
+import { formAtom } from "@/jotai/atoms/formAtom";
+import { useSetAtom } from "jotai";
+import { Edit, Trash } from "lucide-react";
+import { useMutation, useQueryClient } from "react-query";
+import { userDeleteRequest } from "@/api/auth";
 
 export const columns = [
   {
@@ -69,10 +62,17 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "password",
-    header: "Password",
+    accessorKey: "designation",
+    header: "Designation",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("password")}</div>
+      <div className="capitalize">{row.original.ProfileInfo.designation}</div>
+    ),
+  },
+  {
+    accessorKey: "phone",
+    header: "Phone",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.ProfileInfo.phone}</div>
     ),
   },
   {
@@ -80,39 +80,39 @@ export const columns = [
     header: "Role",
     cell: ({ row }) => <div className="capitalize">{row.getValue("role")}</div>,
   },
-  {
-    accessorKey: "has_salary",
-    header: "Salary",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {typeof row.getValue("has_salary") === "boolean" && (
-          <>{row.getValue("has_salary") ? "true" : "false"}</>
-        )}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "has_commission",
-    header: "Commission",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {typeof row.getValue("has_commission") === "boolean" && (
-          <>{row.getValue("has_commission") ? "true" : "false"}</>
-        )}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "has_allowance",
-    header: "Allowance",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {typeof row.getValue("has_allowance") === "boolean" && (
-          <>{row.getValue("has_allowance") ? "true" : "false"}</>
-        )}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "has_salary",
+  //   header: "Salary",
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">
+  //       {typeof row.getValue("has_salary") === "boolean" && (
+  //         <>{row.getValue("has_salary") ? "true" : "false"}</>
+  //       )}
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "has_commission",
+  //   header: "Commission",
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">
+  //       {typeof row.getValue("has_commission") === "boolean" && (
+  //         <>{row.getValue("has_commission") ? "true" : "false"}</>
+  //       )}
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "has_allowance",
+  //   header: "Allowance",
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">
+  //       {typeof row.getValue("has_allowance") === "boolean" && (
+  //         <>{row.getValue("has_allowance") ? "true" : "false"}</>
+  //       )}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "blocked",
     header: "Blocked",
@@ -124,60 +124,113 @@ export const columns = [
       </div>
     ),
   },
-  //   {
-  //     accessorKey: "date",
-  //     header: ({ column }) => {
-  //       return (
-  //         <Button
-  //           variant="Date"
-  //           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //         >
-  //           Date
-  //           <CaretSortIcon className="ml-2 h-4 w-4" />
-  //         </Button>
-  //       );
-  //     },
-  //     cell: ({ row }) => <div className="lowercase">{row.getValue("date")}</div>,
-  //   },
-  //   {
-  //     accessorKey: "map",
-  //     header: ({ column }) => {
-  //       return <Button variant="Date">Location</Button>;
-  //     },
-  //     cell: ({ row }) => {
-  //       return (
-  //         <ComponentDialog title={"View"} trigger={"View"}>
-  //           <Map location={{ lat: row.original.lat, lng: row.original.lng }} />
-  //         </ComponentDialog>
-  //       );
-  //     },
-  //   },
-  //   {
-  //     id: "actions",
-  //     enableHiding: false,
-  //     cell: ({ row }) => {
-  //       const payment = row.original;
-
-  //       return (
-  //         <DropdownMenu>
-  //           <DropdownMenuTrigger asChild>
-  //             <Button variant="ghost" className="h-8 w-8 p-0">
-  //               <span className="sr-only">Open menu</span>
-  //               <DotsHorizontalIcon className="h-4 w-4" />
-  //             </Button>
-  //           </DropdownMenuTrigger>
-  //           <DropdownMenuContent align="end">
-  //             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //             <DropdownMenuItem
-  //               onClick={() => navigator.clipboard.writeText(payment.id)}
-  //             >
-  //               Copy ID
-  //             </DropdownMenuItem>
-  //             <DropdownMenuSeparator />
-  //             <DropdownMenuItem>View Attendance</DropdownMenuItem>
-  //           </DropdownMenuContent>
-  //         </DropdownMenu>
-  //       );
-  //     },
-  //   },
+  {
+    accessorKey: "warning",
+    header: "Warning",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {typeof row.original.ProfileInfo.warning === "boolean" && (
+          <>{row.original.ProfileInfo.warning ? "true" : "false"}</>
+        )}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "authorized",
+    header: "Authorized",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {typeof row.original.ProfileInfo.authorized === "boolean" && (
+          <>{row.original.ProfileInfo.authorized ? "true" : "false"}</>
+        )}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Allowance",
+    header: "Allowance",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.original.has_allowance
+          ? row.original?.Allowance?.amount
+          : "No Allowance"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "CommissionRate",
+    header: "Commission",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.original.has_commission
+          ? row.original?.CommissionRate?.rate
+          : "No Commission"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Salary",
+    header: "Salary",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.original.has_salary ? row.original?.Salary?.amount : "No Salary"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "edit",
+    header: ({ column }) => {
+      return <Button variant="Edit">Edit</Button>;
+    },
+    cell: ({ row }) => {
+      const setState = useSetAtom(formAtom);
+      return (
+        <ComponentDialog
+          onClick={() => {
+            setState({ edit: true, value: row.original });
+          }}
+          onCancel={() => {
+            setState({ edit: false, value: null });
+          }}
+          trigger={<Edit size={20} />}
+        >
+          <UserCE />
+        </ComponentDialog>
+      );
+    },
+  },
+  {
+    accessorKey: "delete",
+    header: ({ column }) => {
+      return <Button variant="s">Delete</Button>;
+    },
+    cell: ({ row }) => {
+      const queryClient = useQueryClient();
+      const deleteUserMutation = useMutation(userDeleteRequest, {
+        onSuccess: () => {
+          queryClient.invalidateQueries("users");
+          toast({
+            variant: "success",
+            title: "Success",
+            description: "User deleted successfully.",
+            duration: 900,
+          });
+        },
+        onError: () => {
+          toast({
+            variant: "destructive",
+            title: "Failed",
+            description: "Failed to delete user.",
+            duration: 900,
+          });
+        },
+      });
+      return (
+        <Trash
+          onClick={() => deleteUserMutation.mutate(row.original.id)}
+          size={20}
+        />
+      );
+    },
+  },
 ];

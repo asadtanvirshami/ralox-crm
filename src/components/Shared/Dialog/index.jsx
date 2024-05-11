@@ -40,19 +40,21 @@ const ConfirmationDialog = React.memo(({ open, setOpen, message }) => {
   );
 });
 
-const ComponentDialog = React.memo(({trigger, children }) => {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent className="w-fit">
-        {children}
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-});
+const ComponentDialog = React.memo(
+  ({ trigger, onClick, onCancel, children }) => {
+    return (
+      <AlertDialog>
+        <AlertDialogTrigger onClick={onClick}>{trigger}</AlertDialogTrigger>
+        <AlertDialogContent className="w-fit">
+          {children}
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={onCancel}>Cancel</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    );
+  }
+);
 
 const WarningDialog = React.memo(({ open, setOpen, message }) => {
   return (
