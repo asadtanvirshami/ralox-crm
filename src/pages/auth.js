@@ -16,7 +16,7 @@ const auth = () => {
               RALOX CRM
             </h1>
             <h5 className="mx-auto text-4xl font-bold text-theme-700 justify-center flex mt-2">
-              Admin Panel
+              For authorized personal only.
             </h5>
             <div className="flex inline-block align-middle justify-center mt-5">
               <div className="p-2 font-body text-xl">

@@ -30,9 +30,10 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 
 import { MoonLoader } from "react-spinners";
-import { FilterX } from "lucide-react";
+import { Download, FilterX } from "lucide-react";
 
 import moment from "moment";
+import { CSVDownload, CSVLink } from "react-csv";
 
 const DataTable = ({
   columns,
@@ -121,7 +122,8 @@ const DataTable = ({
   };
 
   const handleDateSelect = (selectedDate) => {
-    setQuery({ ...query, date: moment(selectedDate).format("YYYY-MM-DD") }); // Update state with selected date
+    const filteredDate = moment(selectedDate).format("YYYY-MM-DD");
+    setQuery({ ...query, date: filteredDate }); // Update state with selected date
   };
 
   return (
@@ -133,6 +135,7 @@ const DataTable = ({
           onChange={(event) => setQuery({ ...query, name: event.target.value })}
           className="max-w-sm"
         />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -176,6 +179,10 @@ const DataTable = ({
         </DropdownMenu>
         <Button variant="outline" className="ml-2">
           <FilterX onClick={handleReset} />
+        </Button>
+        <Button variant="outline" className="ml-2 space-x-2">
+          <CSVLink data={data}>Download</CSVLink>
+          <Download size={17} />
         </Button>
       </div>
       <div className="rounded-md border">
