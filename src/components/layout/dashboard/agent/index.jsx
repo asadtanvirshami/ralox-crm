@@ -41,7 +41,7 @@ const AgentPanel = () => {
             />
 
             <DetailsCard
-              title={"Target"}
+              title={"Acheieved"}
               // className={" bg-gradient-to-r from-black to-theme-700 "}
               className={" bg-gradient-to-r from-teal-400 to-teal-400 "}
               amount={1000}

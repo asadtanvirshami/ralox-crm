@@ -17,6 +17,8 @@ import {
   UsersRound,
   LineChart,
   LogOut,
+  TicketPlus,
+  List,
 } from "lucide-react";
 
 import { useRouter } from "next/router";
@@ -124,6 +126,20 @@ const Layout = ({ children, defaultLayout, navCollapsedSize = 4 }) => {
                   title: "Sales",
                   label: "972",
                   icon: LineChart,
+                  variant: "ghost",
+                  href: "/sales",
+                },
+                {
+                  title: "Tickets",
+                  label: "972",
+                  icon: TicketPlus,
+                  variant: "ghost",
+                  href: "/sales",
+                },
+                {
+                  title: "Leads",
+                  label: "972",
+                  icon: List,
                   variant: "ghost",
                   href: "/sales",
                 },

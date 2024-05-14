@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import Sales from "@/components/layout/sales/index";
 
 const sales = () => {
   return (
-    <div>sales</div>
-  )
-}
+    <React.Fragment>
+      <Sales />
+    </React.Fragment>
+  );
+};
 
-export default sales
+export default sales;
