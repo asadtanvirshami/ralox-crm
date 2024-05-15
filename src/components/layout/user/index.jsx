@@ -1,4 +1,3 @@
-"use client";
 import React, { Fragment, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -7,9 +6,9 @@ import { userDeleteRequest, userGetRequest } from "@/api/auth";
 import { toast } from "@/components/ui/use-toast";
 import DataTable from "@/components/Shared/Table/Users/DataTable";
 import { columns } from "@/components/Shared/Table/Users/Columns";
-import SaleCE from "@/components/Shared/Forms/Sale/SaleCE";
+import UserCE from "@/components/Shared/Forms/User/UserCE";
 
-const Agent = () => {
+const Users = () => {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState({
     role: "",
@@ -47,16 +46,20 @@ const Agent = () => {
     },
   });
 
+  const deleteUser = (id) => {
+    const user = deleteUserMutation(id);
+  };
+
   return (
     <Fragment>
       <>
-        <div className="container flex justify-center items-center h-screen  ">
+        <div className="container flex justify-center items-center h-screen ">
           <div className="container bg-white p-10 rounded-lg shadow-lg h-fit">
-            <h1 className="text-2xl mb-18 font-semibold">{"Sale"}</h1>
+            <h1 className="text-2xl mb-18 font-semibold">{"User"}</h1>
             <Tabs defaultValue="users" className="w-full mt-5">
               <TabsList>
-                <TabsTrigger value="users">All Sales</TabsTrigger>
-                <TabsTrigger value="registration">Create Sale</TabsTrigger>
+                <TabsTrigger value="users">All Users</TabsTrigger>
+                <TabsTrigger value="registration">Registration</TabsTrigger>
               </TabsList>
               <TabsContent value="users">
                 <DataTable
@@ -69,11 +72,12 @@ const Agent = () => {
                 />
               </TabsContent>
               <TabsContent value="registration">
-                <div className="w-full mt-10">
-                  {<SaleCE sales={data?.data} />}
+                <div className="w-fit m-10">
+                  {<UserCE users={data?.data} />}
                 </div>
               </TabsContent>
             </Tabs>
+            {}
             {/* <Table map={true} editable={false} data={data?.data?.data} /> */}
           </div>
         </div>
@@ -82,4 +86,4 @@ const Agent = () => {
   );
 };
 
-export default Agent;
+export default Users;

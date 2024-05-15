@@ -38,7 +38,7 @@ const AdminPanel = () => {
 
   return (
     <div className="container flex justify-center items-center h-full ">
-      <div className="container bg-white p-10 rounded-lg shadow-lg h-[50vh]">
+     <div className="container bg-white p-10 rounded-lg shadow-lg h-fit">
         <h1 className="text-2xl mb-18 font-semibold">{"Attendance"}</h1>
         {
           <DataTable

@@ -134,7 +134,7 @@ const Layout = ({ children, defaultLayout, navCollapsedSize = 4 }) => {
                   label: "972",
                   icon: TicketPlus,
                   variant: "ghost",
-                  href: "/sales",
+                  href: "/ticket",
                 },
                 {
                   title: "Leads",

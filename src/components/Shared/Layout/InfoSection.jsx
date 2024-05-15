@@ -24,10 +24,6 @@ const InfoSection = () => {
     getUserCookie();
   }, [isCheckedIn]);
 
-  console.log("====================================");
-  console.log(isCheckedIn);
-  console.log("====================================");
-
   const [coordinates, setCoordinates] = React.useState({ lng: 0.0, lat: 0.0 });
   // const nextAvailableCheckInTime = user?.lastCheckedIn
   //   ? moment(user?.lastCheckedIn, "HH:mm:ss").add(8, "hours").toDate()
