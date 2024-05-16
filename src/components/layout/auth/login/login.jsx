@@ -9,21 +9,23 @@ import Cookies from "js-cookie";
 
 import { userSigninRequest } from "@/api/auth";
 import { useToast } from "@/components/ui/use-toast";
+import { unitGetRequest } from "@/api/unit";
 
 const Login = () => {
   const router = useRouter();
   const { toast } = useToast();
   const [formData, setFormData] = React.useState({
-    email: "",
+    serial: "",
     password: "",
   });
 
   const loginUser = async (formData) => {
-    if (formData.email < 4 || formData.password < 4) {
+    if (formData.id < 4 || formData.password < 4) {
       return;
     }
 
     const response = await userSigninRequest(formData);
+    const units = await unitGetRequest();
 
     if (response?.success === true) {
       toast({
@@ -48,6 +50,7 @@ const Login = () => {
       };
 
       Cookies.set("user", JSON.stringify(userCache), { expires: 1 });
+      Cookies.set("unit", JSON.stringify(units?.data?.data), { expires: 1 });
       Cookies.set("token", JSON.stringify(jwtToken), { expires: 1 });
 
       setTimeout(() => {
@@ -102,10 +105,10 @@ const Login = () => {
             Sign In
           </h1>
           <form onSubmit={handleSubmit} className="w-auto lg:w-96 grid">
-            <label className="text-sm text-white ml-2">Email</label>
+            <label className="text-sm text-white ml-2">Serial-ID</label>
             <input
-              name="email"
-              type="email"
+              name="serial"
+              type="text"
               onChange={(e) => handleChange(e)}
               className=" p-2 rounded-md m-2 outline-none"
             />

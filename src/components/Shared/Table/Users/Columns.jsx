@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ComponentDialog } from "../../Dialog";
 
-import UserCE from "../../Forms/User/UserCE";
 import { formAtom } from "@/jotai/atoms/formAtom";
-import { useSetAtom } from "jotai";
 import { Edit, Trash } from "lucide-react";
+import { useSetAtom } from "jotai";
 import { useMutation, useQueryClient } from "react-query";
+import UserCE from "../../Forms/User/UserCE";
 import { userDeleteRequest } from "@/api/auth";
 
 export const columns = [
@@ -53,6 +53,13 @@ export const columns = [
       );
     },
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "serial",
+    header: "Serial",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("serial")}</div>
+    ),
   },
   {
     accessorKey: "email",
@@ -153,7 +160,7 @@ export const columns = [
       <div className="capitalize">
         {row.original.has_allowance
           ? row.original?.Allowance?.amount
-          : "No Allowance"}
+          : "-"}
       </div>
     ),
   },
@@ -164,7 +171,7 @@ export const columns = [
       <div className="capitalize">
         {row.original.has_commission
           ? row.original?.CommissionRate?.rate
-          : "No Commission"}
+          : "-"}
       </div>
     ),
   },
@@ -173,7 +180,7 @@ export const columns = [
     header: "Salary",
     cell: ({ row }) => (
       <div className="capitalize">
-        {row.original.has_salary ? row.original?.Salary?.amount : "No Salary"}
+        {row.original.has_salary ? row.original?.Salary?.amount : "-"}
       </div>
     ),
   },
@@ -229,6 +236,7 @@ export const columns = [
         <Trash
           onClick={() => deleteUserMutation.mutate(row.original.id)}
           size={20}
+          className="cursor-pointer"
         />
       );
     },

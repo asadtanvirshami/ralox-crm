@@ -40,6 +40,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { userSignupRequest, userUpdateRequest } from "@/api/auth";
 import { formAtom } from "@/jotai/atoms/formAtom";
 import { useAtom } from "jotai";
+import { Badge } from "@/components/ui/badge";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -73,6 +74,7 @@ const formSchema = z.object({
     })
     .max(11, { message: "Phone must be valid to 11 digits" }),
   address: z.string(),
+  serial: z.string(),
   role: z.string().min(1, {
     message: "Role is required.",
   }),
@@ -92,6 +94,7 @@ const UserCE = () => {
       email: "",
       designation: "",
       phone: "",
+      serial: "",
       has_allowance: false,
       has_salary: false,
       has_commission: false,
@@ -113,23 +116,24 @@ const UserCE = () => {
     if (edit) {
       form.reset({
         id: value?.id,
-        name: value?.name||"",
-        email: value?.email||"",
-        designation: value?.ProfileInfo?.designation||"",
-        phone: value?.ProfileInfo?.phone||"",
-        has_salary: value?.has_salary|| false,
+        name: value?.name || "",
+        email: value?.email || "",
+        serial: value?.serial || "",
+        designation: value?.ProfileInfo?.designation || "",
+        phone: value?.ProfileInfo?.phone || "",
+        has_salary: value?.has_salary || false,
         has_commission: value?.has_commission || false,
         has_allowance: value?.has_allowance || false,
         allowance_amount: value?.Allowance?.amount || null,
         allowance_type: value?.Allowance?.allowance_type || "",
         salary_amount: value?.Salary?.amount || null,
         commission_rate: value?.CommissionRate?.rate || null,
-        authorized: value?.ProfileInfo?.authorized||false,
-        warning: value?.ProfileInfo?.warning||false,
-        password: value?.password||"",
-        role: value?.role||"",
-        blocked: value?.blocked||false,
-        address: value?.ProfileInfo?.address||"",
+        authorized: value?.ProfileInfo?.authorized || false,
+        warning: value?.ProfileInfo?.warning || false,
+        password: value?.password || "",
+        role: value?.role || "",
+        blocked: value?.blocked || false,
+        address: value?.ProfileInfo?.address || "",
         joined: value?.ProfileInfo?.joined
           ? new Date(value.ProfileInfo.joined)
           : null,
@@ -221,14 +225,16 @@ const UserCE = () => {
                   />
                   <FormField
                     control={form.control}
-                    name="address"
+                    name="serial"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Address</FormLabel>
+                        <FormLabel>#Serial</FormLabel>
                         <FormControl>
                           <Input
+                            disabled={true}
                             type={"text"}
-                            placeholder="Block I, North Nazimabad"
+                            className="border-none font-semibold shadow-none text-xl"
+                            placeholder="eg.SR-4401"
                             {...field}
                           />
                         </FormControl>
@@ -237,7 +243,7 @@ const UserCE = () => {
                     )}
                   />
                 </div>
-                <div className="grid grid-cols-2 space-x-3 ">
+                <div className="grid grid-cols-3 space-x-3 ">
                   <FormField
                     control={form.control}
                     name="email"
@@ -248,6 +254,23 @@ const UserCE = () => {
                           <Input
                             type={"email"}
                             placeholder="@example.com"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Address</FormLabel>
+                        <FormControl>
+                          <Input
+                            type={"text"}
+                            placeholder="Block I, North Nazimabad"
                             {...field}
                           />
                         </FormControl>
