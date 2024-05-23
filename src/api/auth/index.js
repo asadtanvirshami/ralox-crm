@@ -24,10 +24,10 @@ const userSignupRequest = (data) => {
   return request;
 };
 
-const userGetRequest = async (page, pageSize, email, name) => {
+const userGetRequest = async (page, pageSize, email, name, serial, unitId) => {
   const request = await axios
     .get(
-      `${process.env.NEXT_PUBLIC_GET_ALL_USERS}?page=${page}&pageSize=${pageSize}&email=${email}&name=${name}`
+      `${process.env.NEXT_PUBLIC_GET_ALL_USERS}?page=${page}&pageSize=${pageSize}&email=${email}&name=${name}&serial=${serial}&unitId=${unitId}`
     )
     .then((response) => {
       return response.data;
@@ -46,11 +46,22 @@ const userDeleteRequest = async (id) => {
 
 const userUpdateRequest = async (data) => {
   const request = await axios
-    .post(process.env.NEXT_PUBLIC_UPDATE_USER, data )
+    .post(process.env.NEXT_PUBLIC_UPDATE_USER, data)
     .then((response) => {
       return response.data;
     });
   return request;
+};
+
+const verifyTokenRequest = async (Cookies, req, res) => {
+  const cookies = new Cookies(req, res);
+  const token = await cookies.get("token");
+  const sessionRequest = await axios
+    .get(process.env.NEXT_PUBLIC_AUTH_USER_VERIFICATION, {
+      headers: { "x-access-token": `${token}` },
+    })
+    .then((response) =>response.data);
+  return sessionRequest;
 };
 
 export {
@@ -59,4 +70,5 @@ export {
   userGetRequest,
   userDeleteRequest,
   userUpdateRequest,
+  verifyTokenRequest,
 };

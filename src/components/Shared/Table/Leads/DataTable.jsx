@@ -57,6 +57,8 @@ const DataTable = ({
     setUnitFilter(unit);
   }, []);
 
+  
+
   const table = useReactTable({
     data,
     columns,
@@ -136,6 +138,7 @@ const DataTable = ({
     setQuery({ ...query, date: moment(selectedDate).format("YYYY-MM-DD") }); // Update state with selected date
   };
 
+
   return (
     <div className="w-full">
       <div className="flex items-center py-4 space-x-2">
@@ -201,11 +204,11 @@ const DataTable = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-2">
-              Campaign <ChevronDownIcon className="ml-2 h-4 w-4" />
+              Filter <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {unitFilters.length > 0 && (
+            {unitFilters && (
               <>
                 {unitFilters.map((item) => {
                   return (

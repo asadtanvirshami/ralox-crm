@@ -13,42 +13,35 @@ const Users = () => {
   const [query, setQuery] = useState({
     role: "",
     name: "",
+    serial: "SR-",
+    unitId: "",
     email: "",
     page: 1,
     pageSize: 8,
   });
 
-  const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["users", query.page, query.pageSize, query.email, query.name],
+  const { data, isLoading } = useQuery({
+    queryKey: [
+      "users",
+      query.page,
+      query.pageSize,
+      query.email,
+      query.name,
+      query.serial,
+      query.unitId,
+    ],
     queryFn: () =>
-      userGetRequest(query.page, query.pageSize, query.email, query.name),
+      userGetRequest(
+        query.page,
+        query.pageSize,
+        query.email,
+        query.name,
+        query.serial,
+        query.unitId
+      ),
     refetchInterval: false,
     refetchOnWindowFocus: true,
   });
-
-  const deleteUserMutation = useMutation(userDeleteRequest, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("users");
-      toast({
-        variant: "success",
-        title: "Success",
-        description: "User deleted successfully.",
-        duration: 900,
-      });
-    },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Failed",
-        description: "Failed to delete user.",
-        duration: 900,
-      });
-    },
-  });
-
-  const deleteUser = (id) => {
-    const user = deleteUserMutation(id);
-  };
 
   return (
     <Fragment>
@@ -77,7 +70,6 @@ const Users = () => {
                 </div>
               </TabsContent>
             </Tabs>
-            {}
             {/* <Table map={true} editable={false} data={data?.data?.data} /> */}
           </div>
         </div>

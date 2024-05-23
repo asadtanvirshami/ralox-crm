@@ -51,7 +51,7 @@ const Login = () => {
 
       Cookies.set("user", JSON.stringify(userCache), { expires: 1 });
       Cookies.set("unit", JSON.stringify(units?.data?.data), { expires: 1 });
-      Cookies.set("token", JSON.stringify(jwtToken), { expires: 1 });
+      Cookies.set("token", response?.data?.token, { expires: 1 });
 
       setTimeout(() => {
         router.push("/dashboard");

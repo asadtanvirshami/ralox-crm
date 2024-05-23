@@ -72,14 +72,14 @@ export const columns = [
     accessorKey: "designation",
     header: "Designation",
     cell: ({ row }) => (
-      <div className="capitalize">{row.original.ProfileInfo.designation}</div>
+      <div className="capitalize">{row.original?.ProfileInfo.designation}</div>
     ),
   },
   {
     accessorKey: "phone",
     header: "Phone",
     cell: ({ row }) => (
-      <div className="capitalize">{row.original.ProfileInfo.phone}</div>
+      <div className="capitalize">{row.original?.ProfileInfo.phone}</div>
     ),
   },
   {
@@ -136,8 +136,8 @@ export const columns = [
     header: "Warning",
     cell: ({ row }) => (
       <div className="capitalize">
-        {typeof row.original.ProfileInfo.warning === "boolean" && (
-          <>{row.original.ProfileInfo.warning ? "true" : "false"}</>
+        {typeof row.original?.ProfileInfo?.warning === "boolean" && (
+          <>{row.original?.ProfileInfo?.warning ? "true" : "false"}</>
         )}
       </div>
     ),
@@ -147,8 +147,8 @@ export const columns = [
     header: "Authorized",
     cell: ({ row }) => (
       <div className="capitalize">
-        {typeof row.original.ProfileInfo.authorized === "boolean" && (
-          <>{row.original.ProfileInfo.authorized ? "true" : "false"}</>
+        {typeof row.original?.ProfileInfo?.authorized === "boolean" && (
+          <>{row.original?.ProfileInfo?.authorized ? "true" : "false"}</>
         )}
       </div>
     ),
@@ -158,9 +158,7 @@ export const columns = [
     header: "Allowance",
     cell: ({ row }) => (
       <div className="capitalize">
-        {row.original.has_allowance
-          ? row.original?.Allowance?.amount
-          : "-"}
+        {row.original.has_allowance ? row.original?.Allowance?.amount : "-"}
       </div>
     ),
   },
@@ -169,9 +167,7 @@ export const columns = [
     header: "Commission",
     cell: ({ row }) => (
       <div className="capitalize">
-        {row.original.has_commission
-          ? row.original?.CommissionRate?.rate
-          : "-"}
+        {row.original.has_commission ? row.original?.CommissionRate?.rate : "-"}
       </div>
     ),
   },

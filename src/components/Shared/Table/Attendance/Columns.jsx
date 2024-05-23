@@ -1,18 +1,18 @@
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import {
   CaretSortIcon,
-  ChevronDownIcon,
   DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { ComponentDialog } from "../../Dialog";
 import Map from "../../Map";

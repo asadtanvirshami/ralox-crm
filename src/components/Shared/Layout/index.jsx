@@ -141,7 +141,7 @@ const Layout = ({ children, defaultLayout, navCollapsedSize = 4 }) => {
                   label: "972",
                   icon: List,
                   variant: "ghost",
-                  href: "/sales",
+                  href: "/lead",
                 },
                 {
                   title: "Web Admin",
