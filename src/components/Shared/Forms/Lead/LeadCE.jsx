@@ -79,6 +79,12 @@ const formSchema = z.object({
   comments: z.string().min(1, {
     message: "Comment is required.",
   }),
+  potential: z.string().min(1, {
+    message: "Potential is required.",
+  }),
+  name: z.string().min(1, {
+    message: "Name is required.",
+  }),
   email: z
     .string({
       required_error: "Email is required.",
@@ -108,6 +114,11 @@ const SaleCE = () => {
     { id: 0, type: "Cold Lead" },
     { id: 1, type: "Warm Lead" },
     { id: 2, type: "Fresh Lead" },
+  ];
+  const potential = [
+    { id: 0, potential: "High" },
+    { id: 1, potential: "Medium" },
+    { id: 2, potential: "Low" },
   ];
   const status = [
     { id: 0, status: "Converted" },
@@ -152,9 +163,11 @@ const SaleCE = () => {
     defaultValues: {
       serial: "",
       title: "",
+      name: "",
       description: "",
       post: "",
       status: "",
+      potential: "",
       type: "",
       city: "",
       country: "",
@@ -163,7 +176,7 @@ const SaleCE = () => {
       comments: "",
       email: "",
       phone: "",
-      unit_id: ""||"",
+      unit_id: "" || "",
       user_id: id || "",
     },
   });
@@ -175,7 +188,9 @@ const SaleCE = () => {
         serial: value?.serial || "",
         source: value?.source || "",
         source_link: value?.source_link || "",
+        potential: value?.potential || "",
         type: value?.type || "",
+        name: value?.name || "",
         status: value?.status || "",
         query: value?.query || "",
         phone: value?.phone || "",
@@ -193,8 +208,6 @@ const SaleCE = () => {
       });
     }
   }, [edit]);
-
-  console.log(form.formState);
 
   const leadCreateMutation = useMutation(leadCreateRequest, {
     onSuccess: () => {
@@ -243,8 +256,8 @@ const SaleCE = () => {
   };
 
   const onEdit = async (values) => {
-    // const newValues = { ...values, id: value?.id };
-    await updateLeadMutation.mutate(values);
+    const newValues = { ...values, id: value?.id };
+    await updateLeadMutation.mutate(newValues);
   };
 
   return (
@@ -306,7 +319,40 @@ const SaleCE = () => {
                     )}
                   />
                 </div>
-                <div className="grid grid-cols-3 space-x-3 ">
+                <div className="grid grid-cols-4 space-x-3 ">
+                  <FormField
+                    control={form.control}
+                    name="potential"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Potential</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a potential of this lead" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {potential.map((item) => {
+                              return (
+                                <SelectItem
+                                  key={item.id}
+                                  value={item.potential}
+                                >
+                                  {item.potential}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="type"
@@ -385,7 +431,24 @@ const SaleCE = () => {
                     )}
                   />
                 </div>
-                <div className="grid grid-cols-5 space-x-3 ">
+                <div className="grid grid-cols-6 space-x-3 ">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            type={"text"}
+                            placeholder="John Doe"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="phone"
@@ -467,7 +530,7 @@ const SaleCE = () => {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a unit of this user" />
+                              <SelectValue placeholder="Select a unit of this lead" />
                             </SelectTrigger>
                           </FormControl>
                           {campaign.length > 0 && (

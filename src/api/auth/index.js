@@ -17,7 +17,6 @@ const userSignupRequest = (data) => {
   const request = axios
     .post(process.env.NEXT_PUBLIC_AUTH_USER_SIGNUP, data)
     .then((response) => {
-      console.log(response);
       return response.data;
     });
 

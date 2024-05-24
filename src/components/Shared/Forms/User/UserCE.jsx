@@ -44,6 +44,7 @@ import { Badge } from "@/components/ui/badge";
 import { unitAtom } from "@/jotai/atoms/unitAtom";
 
 const formSchema = z.object({
+  id:z.string(),
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
@@ -82,9 +83,7 @@ const formSchema = z.object({
   joined: z.date({
     required_error: "A date of joining is required.",
   }),
-  unit_id: z.string().min(4, {
-    message: "Unit is required.",
-  }),
+  unit_id: z.string()
 });
 
 const UserCE = () => {
@@ -97,10 +96,13 @@ const UserCE = () => {
     setUnitFilter(unit);
   }, []);
 
+  console.log(value);
+
   const queryClient = useQueryClient();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id:'',
       name: "",
       email: "",
       designation: "",
@@ -127,7 +129,7 @@ const UserCE = () => {
   useMemo(() => {
     if (edit) {
       form.reset({
-        id: value?.id,
+        id: value?.id || "",
         name: value?.name || "",
         email: value?.email || "",
         serial: value?.serial || "",

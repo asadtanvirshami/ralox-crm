@@ -11,14 +11,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ComponentDialog } from "../../Dialog";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Eye, Star, Trash, View } from "lucide-react";
 
 import { formAtom } from "@/jotai/atoms/formAtom";
 import { useSetAtom } from "jotai";
 
-import {
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 
 import { useMutation, useQueryClient } from "react-query";
 import { userDeleteRequest } from "@/api/auth";
@@ -69,6 +67,13 @@ export const columns = [
       );
     },
     cell: ({ row }) => <div>{row.getValue("email")}</div>,
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("name")}</div>
+    ),
   },
   {
     accessorKey: "phone",
@@ -123,6 +128,35 @@ export const columns = [
     ),
   },
   {
+    accessorKey: "potential",
+    header: "Potential",
+    cell: ({ row }) => {
+      const potential = row.getValue("potential");
+      let potentialColor;
+
+      switch (potential) {
+        case "High":
+          potentialColor = "text-green-500";
+          break;
+        case "Low":
+          potentialColor = "text-red-500";
+          break;
+        case "Medium":
+          potentialColor = "text-orange-500";
+          break;
+        default:
+          potentialColor = "text-gray-500"; // Default color for unexpected status values
+          break;
+      }
+
+      return (
+        <div className={`capitalize font-semibold ${potentialColor}`}>
+          {potential}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
@@ -141,7 +175,11 @@ export const columns = [
           break;
       }
 
-      return <div className={`capitalize font-semibold ${statusColor}`}>{status}</div>;
+      return (
+        <div className={`capitalize font-semibold ${statusColor}`}>
+          {status}
+        </div>
+      );
     },
   },
   {
@@ -166,15 +204,32 @@ export const columns = [
           break;
       }
 
-      return <div className={`capitalize font-semibold ${typeColor}`}>{type}</div>;
+      return (
+        <div className={`capitalize font-semibold ${typeColor}`}>{type}</div>
+      );
     },
   },
   {
     accessorKey: "comments",
     header: "Comments",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("comments")}</div>
-    ),
+    cell: ({ row }) => {
+      return (
+        <ComponentDialog trigger={<Star size={20} />}>
+          {row.getValue("comments")}
+        </ComponentDialog>
+      );
+    },
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => {
+      return (
+        <ComponentDialog trigger={<Star size={20} />}>
+          {row.getValue("description")}
+        </ComponentDialog>
+      );
+    },
   },
   {
     accessorKey: "edit",

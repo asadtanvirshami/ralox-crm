@@ -11,12 +11,15 @@ import SaleCE from "@/components/Shared/Forms/Sale/SaleCE";
 import LeadCE from "@/components/Shared/Forms/Lead/LeadCE";
 import { leadGetRequest } from "@/api/lead";
 
-const index = () => {
+const Lead = () => {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState({
     id: "",
     user_id: "",
     unit_id: "",
+    type: "",
+    month: "",
+    potential: "",
     date: "",
     status: "",
     type: "",
@@ -33,8 +36,9 @@ const index = () => {
       query.id,
       query.user_id,
       query.unit_id,
-      query.date,
       query.status,
+      query.month,
+      query.potential,
       query.type,
       query.serial,
     ],
@@ -45,8 +49,9 @@ const index = () => {
         query.id,
         query.user_id,
         query.unit_id,
-        query.date,
         query.status,
+        query.month,
+        query.potential,
         query.type,
         query.serial
       ),
@@ -109,4 +114,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Lead;
