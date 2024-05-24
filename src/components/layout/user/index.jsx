@@ -13,7 +13,7 @@ const Users = () => {
   const [query, setQuery] = useState({
     role: "",
     name: "",
-    serial: "SR-",
+    serial: "UR-",
     unitId: "",
     email: "",
     page: 1,

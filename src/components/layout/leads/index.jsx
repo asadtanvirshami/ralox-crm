@@ -2,17 +2,13 @@
 import React, { Fragment, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { userDeleteRequest } from "@/api/auth";
-import { toast } from "@/components/ui/use-toast";
+import {useQuery } from "react-query";
 import { columns } from "@/components/Shared/Table/Leads/Columns";
 import DataTable from "@/components/Shared/Table/Leads/DataTable";
-import SaleCE from "@/components/Shared/Forms/Sale/SaleCE";
 import LeadCE from "@/components/Shared/Forms/Lead/LeadCE";
 import { leadGetRequest } from "@/api/lead";
 
 const Lead = () => {
-  const queryClient = useQueryClient();
   const [query, setQuery] = useState({
     id: "",
     user_id: "",
@@ -57,26 +53,6 @@ const Lead = () => {
       ),
     refetchInterval: false,
     refetchOnWindowFocus: true,
-  });
-
-  const deleteUserMutation = useMutation(userDeleteRequest, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("leads");
-      toast({
-        variant: "success",
-        title: "Success",
-        description: "User deleted successfully.",
-        duration: 900,
-      });
-    },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Failed",
-        description: "Failed to delete user.",
-        duration: 900,
-      });
-    },
   });
 
   return (

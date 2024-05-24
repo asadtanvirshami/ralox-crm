@@ -43,29 +43,6 @@ import { useAtom } from "jotai";
 import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
-  title: z.string().min(5, {
-    message: "Title must be at least 5 characters.",
-  }),
-  description: z.string().min(100, {
-    message: "Description must be at least 100 characters.",
-  }),
-  amount: z.coerce.number().multipleOf(0.01),
-  total: z.coerce.number().multipleOf(0.01),
-  platform: z.string().min(1, {
-    message: "Platform must be filled.",
-  }),
-  client_link: z.string().min(1, {
-    message: "Prospect link must be filled.",
-  }),
-  client_username: z.string().min(1, {
-    message: "Prospect username must be filled.",
-  }),
-  platform: z.string().min(1, {
-    message: "Platform must be filled.",
-  }),
-  platform_id: z.string().min(1, {
-    message: "Platform Id must be filled.",
-  }),
   sale_type: z.string().min(1, {
     message: "Type is required.",
   }),
@@ -75,9 +52,23 @@ const formSchema = z.object({
   month: z.string().min(1, {
     message: "Month is required.",
   }),
-  user: z.string(),
-  date: z.date({
-    required_error: "A date of sale is required.",
+  amount: z.coerce.number().min(0.01, {
+    message: "Amount must be a positive number.",
+  }),
+  remaining: z.coerce.number().min(0.0, {
+    message: "Remaining must be a non-negative number.",
+  }),
+  total: z.coerce.number().min(0.01, {
+    message: "Total must be a positive number.",
+  }),
+  deadline: z.string().min(1, {
+    message: "Deadline is required.",
+  }),
+  user: z.string().min(1, {
+    message: "User is required.",
+  }),
+  time: z.string().min(1, {
+    message: "Time is required.",
   }),
 });
 
@@ -88,21 +79,42 @@ const SaleCE = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      platform: "",
-      client_link: "",
-      client_username: "",
-      platform_id: "",
       sale_type: "",
       day: "",
       month: "",
       amount: 0.0,
+      remaining: 0.0,
       total: 0.0,
+      deadline: "",
       user: "",
+      time: "",
       date: new Date(),
     },
   });
+
+  const month = [
+    { id: 0, month: "January" },
+    { id: 1, month: "Feburary" },
+    { id: 2, month: "March" },
+    { id: 3, month: "April" },
+    { id: 4, month: "May" },
+    { id: 5, month: "June" },
+    { id: 6, month: "July" },
+    { id: 7, month: "August" },
+    { id: 8, month: "September" },
+    { id: 9, month: "October" },
+    { id: 10, month: "November" },
+    { id: 11, month: "December" },
+  ];
+  const day = [
+    { id: 0, day: "Monday" },
+    { id: 1, day: "Tuesday" },
+    { id: 2, day: "Wednesday" },
+    { id: 3, day: "Thursday" },
+    { id: 4, day: "Friday" },
+    { id: 5, day: "Saturday" },
+    { id: 6, day: "Sunday" },
+  ];
 
   useMemo(() => {
     if (edit) {
@@ -203,22 +215,6 @@ const SaleCE = () => {
                 <div className="grid grid-cols-2 space-x-3">
                   <FormField
                     control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Title</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Software CRM Project"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
                     name="description"
                     render={({ field }) => (
                       <FormItem>
@@ -235,43 +231,7 @@ const SaleCE = () => {
                     )}
                   />
                 </div>
-                <div className="grid grid-cols-2 space-x-3 ">
-                  <FormField
-                    control={form.control}
-                    name="platform"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Platform</FormLabel>
-                        <FormControl>
-                          <Input
-                            type={"text"}
-                            placeholder="Bark, LinkedIn, Twitter"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Platform handle</FormLabel>
-                        <FormControl>
-                          <Input
-                            type={"text"}
-                            placeholder="@JohnDoe"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="flex items-center space-x-8">
+                <div className="grid grid-cols-4 space-x-3">
                   <FormField
                     control={form.control}
                     name="amount"
@@ -308,42 +268,6 @@ const SaleCE = () => {
                   />
                   <FormField
                     control={form.control}
-                    name="client_link"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Prospect Link</FormLabel>
-                        <FormControl>
-                          <Input
-                            type={"text"}
-                            placeholder="www.bark.com/JohnDoe"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="client_username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Prospect Username</FormLabel>
-                        <FormControl>
-                          <Input
-                            type={"text"}
-                            placeholder="JohnDoe_12"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="grid grid-cols-4 space-x-3 ">
-                  <FormField
-                    control={form.control}
                     name="sale_type"
                     render={({ field }) => (
                       <FormItem>
@@ -371,46 +295,34 @@ const SaleCE = () => {
                       </FormItem>
                     )}
                   />
-
+                </div>
+                <div className="grid grid-cols-5 space-x-3 ">
                   <FormField
                     control={form.control}
                     name="day"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Day</FormLabel>
-                        <br />
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date > new Date() ||
-                                date < new Date("1900-01-01")
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a day" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {day.map((item) => {
+                              return (
+                                <SelectItem key={item.id} value={item.day}>
+                                  {item.day}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -421,39 +333,26 @@ const SaleCE = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Month</FormLabel>
-                        <br />
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date > new Date() ||
-                                date < new Date("1900-01-01")
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a month" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {month.map((item) => {
+                              return (
+                                <SelectItem key={item.id} value={item.month}>
+                                  {item.month}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
