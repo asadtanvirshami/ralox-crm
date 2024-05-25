@@ -109,7 +109,7 @@ const formSchema = z.object({
   }),
 });
 
-const SaleCE = () => {
+const LeadCE = () => {
   const type = [
     { id: 0, type: "Cold Lead" },
     { id: 1, type: "Warm Lead" },
@@ -554,35 +554,6 @@ const SaleCE = () => {
                   />
                 </div>
                 <div className="grid grid-cols-4 space-x-3 ">
-                  {/* <FormField
-                    control={form.control}
-                    name="sale_type"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Sale Type</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a type of this sale" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Upfront">Upfront</SelectItem>
-                            <SelectItem value="Upsell">Upsell</SelectItem>
-                            <SelectItem value="Remaining">Remaining</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          You can select type of this sale.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */}
                   <FormField
                     control={form.control}
                     name="post"
@@ -705,36 +676,6 @@ const SaleCE = () => {
                   />
                 </div>
                 <div className="grid grid-cols-2 space-x-3 ">
-                  {/* <FormField
-                    control={form.control}
-                    name="sale_type"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Sale Type</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a type of this sale" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Upfront">Upfront</SelectItem>
-                            <SelectItem value="Upsell">Upsell</SelectItem>
-                            <SelectItem value="Remaining">Remaining</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          You can select type of this sale.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */}
-
                   <FormField
                     control={form.control}
                     name="description"
@@ -791,4 +732,4 @@ const SaleCE = () => {
   );
 };
 
-export default React.memo(SaleCE);
+export default React.memo(LeadCE);

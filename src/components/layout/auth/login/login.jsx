@@ -36,12 +36,14 @@ const Login = () => {
       });
 
       let jwtToken = jwt_decode(response?.data?.token);
-
+      
       const userCache = {
         id: jwtToken?.id,
         name: jwtToken?.name,
         email: jwtToken?.email,
         designation: jwtToken?.designation,
+        unit: jwtToken?.unit,
+        depart: jwtToken?.depart,
         createdAt: jwtToken?.createdAt,
         updatedAt: jwtToken?.updatedAt,
         checkedIn: false,

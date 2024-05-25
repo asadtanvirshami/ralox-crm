@@ -54,6 +54,7 @@
     "react-csv": "^2.2.2",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
+    "react-dropzone": "^14.2.3",
     "react-geolocated": "^4.1.2",
     "react-hook-form": "^7.51.4",
     "react-query": "^3.39.3",

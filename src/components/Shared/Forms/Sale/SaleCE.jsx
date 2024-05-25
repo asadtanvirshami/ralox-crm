@@ -1,9 +1,13 @@
 "use client";
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { useDropzone } from 'react-dropzone';
+import { UploadCloud } from 'lucide-react';
+import Image from 'next/image'; //
 
 import { Button } from "@/components/ui/button";
 import {
@@ -41,6 +45,7 @@ import { userSignupRequest, userUpdateRequest } from "@/api/auth";
 import { formAtom } from "@/jotai/atoms/formAtom";
 import { useAtom } from "jotai";
 import { Textarea } from "@/components/ui/textarea";
+import { SeparatorVertical } from "lucide-react";
 
 const formSchema = z.object({
   sale_type: z.string().min(1, {
@@ -73,6 +78,7 @@ const formSchema = z.object({
 });
 
 const SaleCE = () => {
+  const [files, setFiles] = React.useState([]);
   let [{ value, edit }] = useAtom(formAtom);
 
   const queryClient = useQueryClient();
@@ -190,6 +196,27 @@ const SaleCE = () => {
     await createSaleMutation.mutate(values);
   };
 
+  const onDrop = useCallback((acceptedFiles) => {
+    setFiles(acceptedFiles.map(file => Object.assign(file, {
+      preview: URL.createObjectURL(file)
+    })));
+  }, []);
+  
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  const thumbs = files.map(file => (
+    <div key={file.name} className="flex justify-center items-center p-2">
+      <Image
+        src={file.preview}
+        alt={file.name}
+        width={100}
+        height={100}
+        className="rounded"
+        onLoad={() => { URL.revokeObjectURL(file.preview); }}
+      />
+    </div>
+  ));
+
   const onEdit = async (values) => {
     const newData = {
       id: value?.id,
@@ -285,6 +312,9 @@ const SaleCE = () => {
                           <SelectContent>
                             <SelectItem value="Upfront">Upfront</SelectItem>
                             <SelectItem value="Upsell">Upsell</SelectItem>
+                            <SelectItem value="Cross-sell">
+                              Cross-sell
+                            </SelectItem>
                             <SelectItem value="Remaining">Remaining</SelectItem>
                           </SelectContent>
                         </Select>
@@ -400,6 +430,29 @@ const SaleCE = () => {
                       </FormItem>
                     )}
                   />
+                </div>
+                <hr></hr>
+                <div className="">
+                  <div className="container mx-auto p-4">
+                    <div
+                      {...getRootProps()}
+                      className={`border-2 border-dashed rounded-md p-4 text-center ${
+                        isDragActive
+                          ? "border-blue-400 bg-blue-100"
+                          : "border-gray-300 bg-gray-50"
+                      }`}
+                    >
+                      <input {...getInputProps()} />
+                      <UploadCloud
+                        className="mx-auto mb-4 text-gray-400"
+                        size={48}
+                      />
+                      <p className="text-gray-600">
+                        Drag & drop some files here, or click to select files
+                      </p>
+                    </div>
+                    <aside className="flex flex-wrap mt-4">{thumbs}</aside>
+                  </div>
                 </div>
                 <Button
                   type="submit"
