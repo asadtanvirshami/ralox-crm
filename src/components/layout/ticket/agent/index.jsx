@@ -21,7 +21,7 @@ const AgentPanel = () => {
   });
 
   const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["users", query.page, query.pageSize, query.email, query.name],
+    queryKey: ["ticket", query.page, query.pageSize, query.email, query.name],
     queryFn: () =>
       userGetRequest(query.page, query.pageSize, query.email, query.name),
     refetchInterval: false,
@@ -30,7 +30,7 @@ const AgentPanel = () => {
 
   const deleteUserMutation = useMutation(userDeleteRequest, {
     onSuccess: () => {
-      queryClient.invalidateQueries("users");
+      queryClient.invalidateQueries("ticket");
       toast({
         variant: "success",
         title: "Success",
@@ -56,10 +56,10 @@ const AgentPanel = () => {
             <h1 className="text-2xl mb-18 font-semibold">{"Ticket"}</h1>
             <Tabs defaultValue="users" className="w-full mt-5">
               <TabsList>
-                <TabsTrigger value="tickets">All Ticket</TabsTrigger>
+                <TabsTrigger value="ticket">All Ticket</TabsTrigger>
                 <TabsTrigger value="registration">Create Ticket</TabsTrigger>
               </TabsList>
-              <TabsContent value="tickets">
+              <TabsContent value="ticket">
                 <DataTable
                   data={data ? data?.data : []}
                   columns={columns}

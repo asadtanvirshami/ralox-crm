@@ -38,16 +38,18 @@ import { format } from "date-fns";
 
 import { useMutation, useQueryClient } from "react-query";
 import { userSignupRequest, userUpdateRequest } from "@/api/auth";
+import { ticketCreateRequest,ticketUpdateRequest } from "@/api/ticket/index";
 import { formAtom } from "@/jotai/atoms/formAtom";
 import { useAtom } from "jotai";
 import { Textarea } from "@/components/ui/textarea";
+import { userAtom } from "@/jotai/atoms/userAtom";
 
 const formSchema = z.object({
   title: z.string().min(5, {
     message: "Title must be at least 5 characters.",
   }),
-  description: z.string().min(100, {
-    message: "Description must be at least 100 characters.",
+  description: z.string().min(10, {
+    message: "Description must be at least 10 characters.",
   }),
   serial: z.string(),
   approved: z.boolean(),
@@ -58,6 +60,7 @@ const formSchema = z.object({
 
 const TicketCE = () => {
   let [{ value, edit }] = useAtom(formAtom);
+  let [{ id }] = useAtom(userAtom);
 
   const queryClient = useQueryClient();
   const form = useForm({
@@ -69,7 +72,7 @@ const TicketCE = () => {
       approved: false,
       approved_by: "",
       closed: false,
-      created_by: "",
+      created_by: id,
     },
   });
 
@@ -88,13 +91,13 @@ const TicketCE = () => {
     }
   }, [edit]);
 
-  const createSaleMutation = useMutation(userSignupRequest, {
+  const createTicketMutation = useMutation(ticketCreateRequest, {
     onSuccess: () => {
-      queryClient.invalidateQueries("sales");
+      queryClient.invalidateQueries("ticket");
       toast({
         variant: "success",
         title: "Success",
-        description: "Sale created successfully.",
+        description: "Ticket created successfully.",
         duration: 900,
       });
       value = {};
@@ -104,19 +107,19 @@ const TicketCE = () => {
       toast({
         variant: "destructive",
         title: "Failed",
-        description: "Failed to create sale.",
+        description: "Failed to create Ticket.",
         duration: 900,
       });
     },
   });
 
-  const updateUserMutation = useMutation(userUpdateRequest, {
+  const updateTicketMutation = useMutation(ticketUpdateRequest, {
     onSuccess: () => {
-      queryClient.invalidateQueries("sales");
+      queryClient.invalidateQueries("ticket");
       toast({
         variant: "success",
         title: "Success",
-        description: "Sale updated successfully.",
+        description: "Ticket updated successfully.",
         duration: 900,
       });
     },
@@ -124,14 +127,15 @@ const TicketCE = () => {
       toast({
         variant: "destructive",
         title: "Failed",
-        description: "Failed to update sale.",
+        description: "Failed to update Ticket.",
         duration: 900,
       });
     },
   });
 
   const onSubmit = async (values) => {
-    await createSaleMutation.mutate(values);
+    console.log("Working Submit")
+    await createTicketMutation.mutate(values);
   };
 
   const onEdit = async (values) => {
@@ -144,7 +148,7 @@ const TicketCE = () => {
       closed: value?.closed,
       ...values,
     };
-    await updateUserMutation.mutate(newData);
+    await updateTicketMutation.mutate(newData);
   };
 
   return (
@@ -197,13 +201,13 @@ const TicketCE = () => {
                 </div>
                 <Button
                   type="submit"
-                  disabled={
-                    createSaleMutation.isLoading
-                      ? true
-                      : false || updateUserMutation.isLoading
-                      ? true
-                      : false
-                  }
+                  // disabled={
+                  //   createSaleMutation.isLoading
+                  //     ? true
+                  //     : false || updateUserMutation.isLoading
+                  //     ? true
+                  //     : false
+                  // }
                 >
                   Submit
                 </Button>
