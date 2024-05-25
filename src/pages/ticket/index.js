@@ -1,13 +1,12 @@
-import React from 'react'
-import Ticket from '@/components/layout/ticket/'
+import React from "react";
+import Ticket from "@/components/layout/ticket/";
 
 const ticket = () => {
   return (
     <React.Fragment>
-      <Ticket/>
+      <Ticket />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ticket
-    
+export default ticket;

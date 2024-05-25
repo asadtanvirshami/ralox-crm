@@ -5,9 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { userDeleteRequest, userGetRequest } from "@/api/auth";
 import { toast } from "@/components/ui/use-toast";
-import DataTable from "@/components/Shared/Table/Users/DataTable";
-import { columns } from "@/components/Shared/Table/Users/Columns";
+import DataTable from "@/components/Shared/Table/Ticket/DataTable";
+import { columns } from "@/components/Shared/Table/Ticket/Columns";
 import SaleCE from "@/components/Shared/Forms/Sale/SaleCE";
+import TicketCE from "@/components/Shared/Forms/Ticket/TicketCE";
 
 const AgentPanel = () => {
   const queryClient = useQueryClient();
@@ -55,10 +56,10 @@ const AgentPanel = () => {
             <h1 className="text-2xl mb-18 font-semibold">{"Ticket"}</h1>
             <Tabs defaultValue="users" className="w-full mt-5">
               <TabsList>
-                <TabsTrigger value="users">All Ticket</TabsTrigger>
+                <TabsTrigger value="tickets">All Ticket</TabsTrigger>
                 <TabsTrigger value="registration">Create Ticket</TabsTrigger>
               </TabsList>
-              <TabsContent value="users">
+              <TabsContent value="tickets">
                 <DataTable
                   data={data ? data?.data : []}
                   columns={columns}
@@ -70,7 +71,8 @@ const AgentPanel = () => {
               </TabsContent>
               <TabsContent value="registration">
                 <div className="w-full mt-10">
-                  {<SaleCE sales={data?.data} />}
+                  {/* {<SaleCE sales={data?.data} />} */}
+                  <TicketCE />
                 </div>
               </TabsContent>
             </Tabs>
