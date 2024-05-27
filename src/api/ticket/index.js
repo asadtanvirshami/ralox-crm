@@ -1,29 +1,48 @@
 import axios from "axios";
 
 const ticketCreateRequest = (data) => {
-    console.log("Working now Ticket")
-    const request = axios
-      .post(process.env.NEXT_PUBLIC_POST_TICKET, data)
-      .then((response) => {
-        console.log(response);
-        return response.data;
-      });
-  
-    return request;
-  };
+  const request = axios
+    .post(process.env.NEXT_PUBLIC_POST_TICKET, data)
+    .then((response) => {
+      return response.data;
+    });
 
-  const ticketUpdateRequest = (data) => {
-    const request = axios
-      .post(process.env.NEXT_PUBLIC_UPDATE_TICKET, data)
-      .then((response) => {
-        console.log(response);
-        return response.data;
-      });
-  
-    return request;
-  };
+  return request;
+};
 
-  export {
-    ticketCreateRequest,
-    ticketUpdateRequest
-  };
+const ticketUpdateRequest = (data) => {
+  const request = axios
+    .post(process.env.NEXT_PUBLIC_UPDATE_TICKET, data)
+    .then((response) => {
+      return response.data;
+    });
+
+  return request;
+};
+
+const ticketGetRequest = () => {
+  const request = axios
+    .get(process.env.NEXT_PUBLIC_GET_TICKET)
+    .then((response) => {
+      return response.data;
+    });
+
+  return request;
+};
+
+const ticketDeleteRequest = (id) => {
+  const request = axios
+    .delete(`${process.env.NEXT_PUBLIC_DELETE_TICKET}/?id=${id}`)
+    .then((response) => {
+      return response.data;
+    });
+
+  return request;
+};
+
+export {
+  ticketCreateRequest,
+  ticketUpdateRequest,
+  ticketGetRequest,
+  ticketDeleteRequest,
+};
