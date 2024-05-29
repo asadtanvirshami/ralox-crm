@@ -249,7 +249,7 @@ const UserCE = () => {
                             disabled={true}
                             type={"text"}
                             className="border-none font-semibold shadow-none text-xl"
-                            placeholder="eg.SR-4401"
+                            placeholder="eg.UR-4401"
                             {...field}
                           />
                         </FormControl>

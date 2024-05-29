@@ -40,9 +40,9 @@ const leadUpdateRequest = async (data) => {
   return request;
 };
 
-const leadDeletedRequest = async () => {
+const leadDeletedRequest = async (id) => {
   const request = await axios
-    .get(process.env.NEXT_PUBLIC_GET_UNIT)
+    .delete(`${process.env.NEXT_PUBLIC_DELETE_LEAD}/${id}/delete`)
     .then((response) => {
       return response.data;
     });

@@ -21,6 +21,7 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { useMutation, useQueryClient } from "react-query";
 import { userDeleteRequest } from "@/api/auth";
 import LeadCE from "../../Forms/Lead/LeadCE";
+import { leadDeletedRequest } from "@/api/lead";
 
 export const columns = [
   {
@@ -260,13 +261,13 @@ export const columns = [
     },
     cell: ({ row }) => {
       const queryClient = useQueryClient();
-      const deleteUserMutation = useMutation(userDeleteRequest, {
+      const deleteLeadMutation = useMutation(leadDeletedRequest, {
         onSuccess: () => {
-          queryClient.invalidateQueries("users");
+          queryClient.invalidateQueries("leads");
           toast({
             variant: "success",
             title: "Success",
-            description: "User deleted successfully.",
+            description: "Lead deleted successfully.",
             duration: 900,
           });
         },
@@ -274,14 +275,15 @@ export const columns = [
           toast({
             variant: "destructive",
             title: "Failed",
-            description: "Failed to delete user.",
+            description: "Failed to delete lead.",
             duration: 900,
           });
         },
       });
+      console.log(row.original.id);
       return (
         <Trash
-          onClick={() => deleteUserMutation.mutate(row.original.id)}
+          onClick={() => deleteLeadMutation.mutate(row.original.id)}
           size={20}
           className="cursor-pointer"
         />

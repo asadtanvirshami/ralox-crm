@@ -5,9 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useDropzone } from 'react-dropzone';
-import { UploadCloud } from 'lucide-react';
-import Image from 'next/image'; //
+import { useDropzone } from "react-dropzone";
+import { UploadCloud } from "lucide-react";
+import Image from "next/image"; //
 
 import { Button } from "@/components/ui/button";
 import {
@@ -46,6 +46,7 @@ import { formAtom } from "@/jotai/atoms/formAtom";
 import { useAtom } from "jotai";
 import { Textarea } from "@/components/ui/textarea";
 import { SeparatorVertical } from "lucide-react";
+import AddRow from "../../AddRow";
 
 const formSchema = z.object({
   sale_type: z.string().min(1, {
@@ -79,6 +80,7 @@ const formSchema = z.object({
 
 const SaleCE = () => {
   const [files, setFiles] = React.useState([]);
+  const [rows, setRows] = React.useState([{ amount: "", type: "" }]);
   let [{ value, edit }] = useAtom(formAtom);
 
   const queryClient = useQueryClient();
@@ -197,14 +199,18 @@ const SaleCE = () => {
   };
 
   const onDrop = useCallback((acceptedFiles) => {
-    setFiles(acceptedFiles.map(file => Object.assign(file, {
-      preview: URL.createObjectURL(file)
-    })));
+    setFiles(
+      acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )
+    );
   }, []);
-  
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const thumbs = files.map(file => (
+  const thumbs = files.map((file) => (
     <div key={file.name} className="flex justify-center items-center p-2">
       <Image
         src={file.preview}
@@ -212,7 +218,9 @@ const SaleCE = () => {
         width={100}
         height={100}
         className="rounded"
-        onLoad={() => { URL.revokeObjectURL(file.preview); }}
+        onLoad={() => {
+          URL.revokeObjectURL(file.preview);
+        }}
       />
     </div>
   ));
@@ -229,6 +237,10 @@ const SaleCE = () => {
     await updateUserMutation.mutate(newData);
   };
 
+  const handleAddRow = (newRow) => {
+    setRows([...rows, newRow]);
+  };
+
   return (
     <div className="w-full">
       <div className="space-y-8 justify-center">
@@ -239,26 +251,7 @@ const SaleCE = () => {
                 onSubmit={form.handleSubmit(edit ? onEdit : onSubmit)}
                 className="space-y-6 w-full"
               >
-                <div className="grid grid-cols-2 space-x-3">
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            type={"text"}
-                            placeholder="Type here..."
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="grid grid-cols-4 space-x-3">
+                <div className="grid grid-cols-3 space-x-3">
                   <FormField
                     control={form.control}
                     name="amount"
@@ -289,38 +282,6 @@ const SaleCE = () => {
                             {...field}
                           />
                         </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="sale_type"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Sale Type</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a type of this sale" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Upfront">Upfront</SelectItem>
-                            <SelectItem value="Upsell">Upsell</SelectItem>
-                            <SelectItem value="Cross-sell">
-                              Cross-sell
-                            </SelectItem>
-                            <SelectItem value="Remaining">Remaining</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          You can select type of this sale.
-                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -431,6 +392,31 @@ const SaleCE = () => {
                     )}
                   />
                 </div>
+                <div className="grid grid-cols-2 space-x-3">
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            type={"text"}
+                            placeholder="Type here..."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <hr></hr>
+                <AddRow
+                  rows={rows}
+                  setRows={setRows}
+                  onRowsChange={handleAddRow}
+                />
                 <hr></hr>
                 <div className="">
                   <div className="container mx-auto p-4">
