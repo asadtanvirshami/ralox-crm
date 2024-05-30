@@ -18,6 +18,7 @@ import {
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -50,6 +51,35 @@ const DataTable = ({
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [unitFilters, setUnitFilter] = React.useState([]);
+
+  const type = [
+    { id: 0, type: "Cold Lead" },
+    { id: 1, type: "Warm Lead" },
+    { id: 2, type: "Fresh Lead" },
+  ];
+  const potential = [
+    { id: 0, potential: "High" },
+    { id: 1, potential: "Medium" },
+    { id: 2, potential: "Low" },
+  ];
+  const status = [
+    { id: 0, status: "Converted" },
+    { id: 1, status: "Not Converted" },
+  ];
+  const month = [
+    { id: 0, month: "January" },
+    { id: 1, month: "Feburary" },
+    { id: 2, month: "March" },
+    { id: 3, month: "April" },
+    { id: 4, month: "May" },
+    { id: 5, month: "June" },
+    { id: 6, month: "July" },
+    { id: 7, month: "August" },
+    { id: 8, month: "September" },
+    { id: 9, month: "October" },
+    { id: 10, month: "November" },
+    { id: 11, month: "December" },
+  ];
 
   let [unit] = useAtom(unitAtom);
 
@@ -128,7 +158,13 @@ const DataTable = ({
       name: "",
       serial: "",
       email: "",
-      unitId: "",
+      unit_id: "",
+      user_id: "",
+      id: "",
+      status: "",
+      type: "",
+      month: "",
+      potential: "",
     });
   };
 
@@ -149,28 +185,6 @@ const DataTable = ({
             })
           }
           className="max-w-[8rem]"
-        />
-        <Input
-          placeholder="Filter name"
-          value={query.name}
-          onChange={(event) =>
-            setQuery({
-              ...query,
-              name: event.target.value,
-            })
-          }
-          className="max-w-sm"
-        />
-        <Input
-          placeholder="Filter email"
-          value={query.email}
-          onChange={(event) =>
-            setQuery({
-              ...query,
-              email: event.target.value,
-            })
-          }
-          className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -205,7 +219,7 @@ const DataTable = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {unitFilters.length > 0 && (
+            {unitFilters && (
               <>
                 {unitFilters.map((item) => {
                   return (
@@ -216,12 +230,140 @@ const DataTable = ({
                       onValueChange={(event) =>
                         setQuery({
                           ...query,
-                          unitId: item.id,
+                          unit_id: item.id,
                         })
                       }
                     >
                       <DropdownMenuRadioItem value={item.id}>
                         {item.name}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  );
+                })}
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-2">
+              Status <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {status && (
+              <>
+                {status.map((item) => {
+                  return (
+                    <DropdownMenuRadioGroup
+                      className="cursor-pointer"
+                      key={item.id}
+                      value={item.id}
+                      onValueChange={(event) =>
+                        setQuery({
+                          ...query,
+                          status: item.status,
+                        })
+                      }
+                    >
+                      <DropdownMenuRadioItem value={item.status}>
+                        {item.status}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  );
+                })}
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-2">
+              Type <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {type && (
+              <>
+                {type.map((item) => {
+                  return (
+                    <DropdownMenuRadioGroup
+                      className="cursor-pointer"
+                      key={item.id}
+                      value={item.id}
+                      onValueChange={(event) =>
+                        setQuery({
+                          ...query,
+                          type: item.type,
+                        })
+                      }
+                    >
+                      <DropdownMenuRadioItem value={item.type}>
+                        {item.type}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  );
+                })}
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-2">
+              Month <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {month && (
+              <>
+                {month.map((item) => {
+                  return (
+                    <DropdownMenuRadioGroup
+                      className="cursor-pointer"
+                      key={item.id}
+                      value={item.id}
+                      onValueChange={(event) =>
+                        setQuery({
+                          ...query,
+                          month: item.month,
+                        })
+                      }
+                    >
+                      <DropdownMenuRadioItem value={item.month}>
+                        {item.month}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  );
+                })}
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-2">
+              Potential <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {potential && (
+              <>
+                {potential.map((item) => {
+                  return (
+                    <DropdownMenuRadioGroup
+                      className="cursor-pointer"
+                      key={item.id}
+                      value={item.id}
+                      onValueChange={(event) =>
+                        setQuery({
+                          ...query,
+                          potential: item.potential,
+                        })
+                      }
+                    >
+                      <DropdownMenuRadioItem value={item.potential}>
+                        {item.potential}
                       </DropdownMenuRadioItem>
                     </DropdownMenuRadioGroup>
                   );

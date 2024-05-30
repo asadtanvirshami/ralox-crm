@@ -19,6 +19,8 @@ import {
   LogOut,
   TicketPlus,
   List,
+  ArrowRightLeft,
+  SquareGanttChart,
 } from "lucide-react";
 
 import { useRouter } from "next/router";
@@ -96,16 +98,18 @@ const Layout = ({ children, defaultLayout, navCollapsedSize = 4 }) => {
               links={[
                 {
                   title: "Dashboard",
-                  label: "128",
                   icon: LayoutDashboard,
-                  variant: "default",
+                  variant: `${
+                    router.pathname === "/dashboard" ? "default" : "ghost"
+                  }`,
                   href: "/dashboard",
                 },
                 {
                   title: "Users",
-                  label: "9",
                   icon: UsersRound,
-                  variant: "ghost",
+                  variant: `${
+                    router.pathname === "/users" ? "default" : "ghost"
+                  }`,
                   href: "/users",
                 },
               ]}
@@ -117,35 +121,52 @@ const Layout = ({ children, defaultLayout, navCollapsedSize = 4 }) => {
               links={[
                 {
                   title: "Attendance",
-                  label: "972",
                   icon: CalendarCheck,
-                  variant: "ghost",
+                  variant: `${
+                    router.pathname === "/attendance" ? "default" : "ghost"
+                  }`,
                   href: "/attendance",
                 },
                 {
                   title: "Sales",
-                  label: "972",
                   icon: LineChart,
-                  variant: "ghost",
+                  variant: `${
+                    router.pathname === "/sales" ? "default" : "ghost"
+                  }`,
                   href: "/sales",
                 },
                 {
                   title: "Tickets",
-                  label: "972",
                   icon: TicketPlus,
-                  variant: "ghost",
+                  variant: `${
+                    router.pathname === "/ticket" ? "default" : "ghost"
+                  }`,
                   href: "/ticket",
                 },
                 {
                   title: "Leads",
-                  label: "972",
                   icon: List,
+                  variant: `${
+                    router.pathname === "/lead" ? "default" : "ghost"
+                  }`,
+                  href: "/lead",
+                },
+                {
+                  title: "Transactions",
+                  icon: ArrowRightLeft,
+                  variant: `${
+                    router.pathname === "/transactions" ? "default" : "ghost"
+                  }`,
+                  href: "/lead",
+                },
+                {
+                  title: "Projects",
+                  icon: SquareGanttChart,
                   variant: "ghost",
-                  href: "/sales",
+                  href: "/lead",
                 },
                 {
                   title: "Web Admin",
-                  label: "972",
                   icon: Globe,
                   variant: "ghost",
                   href: "/users",

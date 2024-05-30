@@ -36,12 +36,14 @@ const Login = () => {
       });
 
       let jwtToken = jwt_decode(response?.data?.token);
-
+      
       const userCache = {
         id: jwtToken?.id,
         name: jwtToken?.name,
         email: jwtToken?.email,
         designation: jwtToken?.designation,
+        unit: jwtToken?.unit,
+        depart: jwtToken?.depart,
         createdAt: jwtToken?.createdAt,
         updatedAt: jwtToken?.updatedAt,
         checkedIn: false,
@@ -51,7 +53,7 @@ const Login = () => {
 
       Cookies.set("user", JSON.stringify(userCache), { expires: 1 });
       Cookies.set("unit", JSON.stringify(units?.data?.data), { expires: 1 });
-      Cookies.set("token", JSON.stringify(jwtToken), { expires: 1 });
+      Cookies.set("token", response?.data?.token, { expires: 1 });
 
       setTimeout(() => {
         router.push("/dashboard");

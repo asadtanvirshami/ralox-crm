@@ -41,8 +41,10 @@ import { userSignupRequest, userUpdateRequest } from "@/api/auth";
 import { formAtom } from "@/jotai/atoms/formAtom";
 import { useAtom } from "jotai";
 import { Badge } from "@/components/ui/badge";
+import { unitAtom } from "@/jotai/atoms/unitAtom";
 
 const formSchema = z.object({
+  id:z.string(),
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
@@ -81,15 +83,26 @@ const formSchema = z.object({
   joined: z.date({
     required_error: "A date of joining is required.",
   }),
+  unit_id: z.string()
 });
 
 const UserCE = () => {
   let [{ value, edit }] = useAtom(formAtom);
+  const [unitFilters, setUnitFilter] = React.useState([]);
+
+  let [unit] = useAtom(unitAtom);
+
+  React.useEffect(() => {
+    setUnitFilter(unit);
+  }, []);
+
+  console.log(value);
 
   const queryClient = useQueryClient();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id:'',
       name: "",
       email: "",
       designation: "",
@@ -108,6 +121,7 @@ const UserCE = () => {
       password: "",
       role: "",
       address: "",
+      unit_id: "",
       joined: new Date(),
     },
   });
@@ -115,12 +129,13 @@ const UserCE = () => {
   useMemo(() => {
     if (edit) {
       form.reset({
-        id: value?.id,
+        id: value?.id || "",
         name: value?.name || "",
         email: value?.email || "",
         serial: value?.serial || "",
         designation: value?.ProfileInfo?.designation || "",
         phone: value?.ProfileInfo?.phone || "",
+        unit_id: value?.unit_id || "",
         has_salary: value?.has_salary || false,
         has_commission: value?.has_commission || false,
         has_allowance: value?.has_allowance || false,
@@ -234,7 +249,7 @@ const UserCE = () => {
                             disabled={true}
                             type={"text"}
                             className="border-none font-semibold shadow-none text-xl"
-                            placeholder="eg.SR-4401"
+                            placeholder="eg.UR-4401"
                             {...field}
                           />
                         </FormControl>
@@ -606,6 +621,41 @@ const UserCE = () => {
                   />
                   <FormField
                     control={form.control}
+                    name="unit_id"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Unit</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a unit of this user" />
+                            </SelectTrigger>
+                          </FormControl>
+                          {unitFilters.length > 0 && (
+                            <SelectContent>
+                              {unitFilters.map((item) => {
+                                return (
+                                  <SelectItem value={item.id} key={item.id}>
+                                    {item.name}
+                                  </SelectItem>
+                                );
+                              })}
+                            </SelectContent>
+                          )}
+                        </Select>
+                        <FormDescription>
+                          You can manage unit of this user.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
                     name="password"
                     render={({ field }) => (
                       <FormItem>
@@ -621,50 +671,49 @@ const UserCE = () => {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="joined"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Joined</FormLabel>
-                        <br />
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date > new Date() ||
-                                date < new Date("1900-01-01")
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
+                <FormField
+                  control={form.control}
+                  name="joined"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Joined</FormLabel>
+                      <br />
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[10rem] pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) =>
+                              date > new Date() || date < new Date("1900-01-01")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <Button
                   type="submit"
                   disabled={
