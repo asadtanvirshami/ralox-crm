@@ -10,6 +10,7 @@ import TicketCE from "../../Forms/Ticket/TicketCE";
 import { useMutation, useQueryClient } from "react-query";
 import { ticketDeleteRequest } from "@/api/ticket";
 import { toast } from "@/components/ui/use-toast";
+import { MoonLoader } from "react-spinners";
 
 const DataTable = ({ data, isLoading, totalCount }) => {
   const setState = useSetAtom(formAtom);
@@ -36,12 +37,18 @@ const DataTable = ({ data, isLoading, totalCount }) => {
   });
   return (
     <div className="w-full mt-3">
+      {isLoading && (
+        <div className="flex justify-center items-center">
+          <MoonLoader />
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-scroll h-[70vh]">
         {data?.map((val, ind) => {
           return (
             <div
               key={ind}
-              className="p-4 border-2 border-[#e4e4e7] rounded bg-[#f4f4f5]"
+              className="p-4 border-2 border-[#e4e4e7] rounded bg-[#f4f4f5] max-h-[180px]"
             >
               <div className="flex justify-between items-center">
                 <h1 className="text-xl font-semibold text-[#09090B] mb-2">
