@@ -21,6 +21,7 @@ import {
   List,
   ArrowRightLeft,
   SquareGanttChart,
+  UserSquare,
 } from "lucide-react";
 
 import { useRouter } from "next/router";
@@ -162,6 +163,14 @@ const Layout = ({ children, defaultLayout, navCollapsedSize = 4 }) => {
                 {
                   title: "Projects",
                   icon: SquareGanttChart,
+                  variant: `${
+                    router.pathname === "/transactions" ? "default" : "ghost"
+                  }`,
+                  href: "/lead",
+                },
+                {
+                  title: "Prospects",
+                  icon: UserSquare,
                   variant: "ghost",
                   href: "/lead",
                 },

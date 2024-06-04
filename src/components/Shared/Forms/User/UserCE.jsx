@@ -96,7 +96,6 @@ const UserCE = () => {
     setUnitFilter(unit);
   }, []);
 
-  console.log(value);
 
   const queryClient = useQueryClient();
   const form = useForm({

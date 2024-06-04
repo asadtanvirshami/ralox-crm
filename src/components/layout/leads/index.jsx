@@ -2,10 +2,10 @@
 import React, { Fragment, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import {useQuery } from "react-query";
 import { columns } from "@/components/Shared/Table/Leads/Columns";
 import DataTable from "@/components/Shared/Table/Leads/DataTable";
 import LeadCE from "@/components/Shared/Forms/Lead/LeadCE";
+import {useQuery } from "react-query";
 import { leadGetRequest } from "@/api/lead";
 
 const Lead = () => {

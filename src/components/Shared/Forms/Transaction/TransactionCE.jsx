@@ -44,22 +44,14 @@ import { useMutation, useQueryClient } from "react-query";
 import { userSignupRequest, userUpdateRequest } from "@/api/auth";
 import { formAtom } from "@/jotai/atoms/formAtom";
 import { useAtom } from "jotai";
-import { Textarea } from "@/components/ui/textarea";
-import { SeparatorVertical } from "lucide-react";
-import AddRow from "../../AddRow";
-import SelectLead from "../../Select/Leads";
-import SelectService from "../../Select/Service";
+
 import { saleCreateRequest } from "@/api/sale";
 import { userAtom } from "@/jotai/atoms/userAtom";
-import moment from "moment";
-import { unitAtom } from "@/jotai/atoms/unitAtom";
+import SelectSale from "../../Select/Sale";
 
 const formSchema = z.object({
-  lead_id: z.string().min(1, {
-    message: "Lead is required.",
-  }),
-  service_id: z.string().min(1, {
-    message: "Service is required.",
+  sale_id: z.string().min(1, {
+    message: "SaleID is required.",
   }),
   day: z.string().min(1, {
     message: "Day is required.",
@@ -67,60 +59,61 @@ const formSchema = z.object({
   month: z.string().min(1, {
     message: "Month is required.",
   }),
-  type: z.string().min(1, {
-    message: "Type is required.",
+  img: z.string().min(1, {
+    message: "Image is required.",
+  }),
+  payment_method: z.string().min(1, {
+    message: "Payment is required.",
+  }),
+  outstanding: z.string().min(1, {
+    message: "Outstanding is required.",
   }),
   amount: z.coerce.number().min(0.01, {
     message: "Amount must be a positive number.",
   }),
-  user_id: z.string().min(1, {
-    message: "User is required.",
-  }),
-  unit_id: z.string().min(1, {
-    message: "Unit is required.",
-  }),
+  // user_id: z.string().min(1, {
+  //   message: "User is required.",
+  // }),
   date: z.date({
     required_error: "A date of joining is required.",
   }),
 });
 
-const SaleCE = () => {
+const TransactionCE = () => {
   const [files, setFiles] = React.useState([]);
   const [rows, setRows] = React.useState([{ amount: "", type: "" }]);
-  const [unitFilters, setUnitFilter] = React.useState([]);
-
+  
   let [{ value, edit }] = useAtom(formAtom);
   let [{ id }] = useAtom(userAtom);
-  let [unit] = useAtom(unitAtom);
 
   const currentDate = new Date();
-  const currentDay = moment().format("dddd");
-  const currentMonth = moment().format("MMMM");
-  const queryClient = useQueryClient();
+  const currentDay = currentDate.getDate();
+  const currentMonth = currentDate.getMonth() + 1; 
 
+  const queryClient = useQueryClient();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       day: currentDay,
       month: currentMonth,
       amount: 0.0,
+      outstanding: 0.0,
       user_id: id || "",
-      service_id: "",
-      lead_id: "",
-      unit_id: ""||null,
-      type: "",
+      payment_method: "",
+      img: "",
+      sale_id: "",
       date: currentDate,
     },
   });
 
-  React.useEffect(() => {
-    setUnitFilter(unit);
-  }, []);
-
-  const type = [
-    { id: 0, type: "Front-Sell" },
-    { id: 1, type: "Cross-Sell" },
-    { id: 2, type: "Up-Sell" },
+  const paymentMethod = [
+    { id: 0, name: "PayPal" },
+    { id: 1, name: "Cashapp" },
+    { id: 2, name: "Bank-Account" },
+    { id: 3, name: "Stripe" },
+    { id: 4, name: "Venmo" },
+    { id: 5, name: "Skrill" },
+    { id: 6, name: "Wire-Transfer" },
   ];
 
   useMemo(() => {
@@ -268,16 +261,32 @@ const SaleCE = () => {
                       </FormItem>
                     )}
                   />
-                  <SelectLead form={form} name={"lead_id"} />
-                  <SelectService form={form} name={"service_id"} />
-                </div>
-                <div className="grid grid-cols-2 space-x-3">
                   <FormField
                     control={form.control}
-                    name="type"
+                    name="outstanding"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Type</FormLabel>
+                        <FormLabel>Outstanding</FormLabel>
+                        <FormControl>
+                          <Input
+                            type={"number"}
+                            placeholder="0.00"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <SelectSale form={form} name={"sale_id"} />
+                </div>
+                <div className="grid grid-cols-3 space-x-3 ">
+                  <FormField
+                    control={form.control}
+                    name="payment_method"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Payment Method</FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
@@ -285,14 +294,14 @@ const SaleCE = () => {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a type of this transaction" />
+                              <SelectValue placeholder="Select a payment method of this transaction" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {type.map((item) => {
+                            {paymentMethod.map((item) => {
                               return (
-                                <SelectItem key={item.id} value={item.type}>
-                                  {item.type}
+                                <SelectItem key={item.id} value={item.name}>
+                                  {item.name}
                                 </SelectItem>
                               );
                             })}
@@ -304,42 +313,24 @@ const SaleCE = () => {
                   />
                   <FormField
                     control={form.control}
-                    name="unit_id"
+                    name="acc"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Unit</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a unit of this sale" />
-                            </SelectTrigger>
-                          </FormControl>
-                          {unitFilters.length > 0 && (
-                            <SelectContent>
-                              {unitFilters.map((item) => {
-                                return (
-                                  <SelectItem value={item.id} key={item.id}>
-                                    {item.name}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectContent>
-                          )}
-                        </Select>
-                        <FormDescription>
-                          Select unit of this sale.
-                        </FormDescription>
+                        <FormLabel>Account or Tag</FormLabel>
+                        <FormControl>
+                          <Input
+                            type={"text"}
+                            placeholder="@tag or PKW-9906999888"
+                            {...field}
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
                 <hr></hr>
-                {/* <div className="">
+                <div className="">
                   <div className="container mx-auto p-4">
                     <div
                       {...getRootProps()}
@@ -360,7 +351,7 @@ const SaleCE = () => {
                     </div>
                     <aside className="flex flex-wrap mt-4">{thumbs}</aside>
                   </div>
-                </div> */}
+                </div>
                 <Button
                   type="submit"
                   disabled={
@@ -382,4 +373,4 @@ const SaleCE = () => {
   );
 };
 
-export default React.memo(SaleCE);
+export default React.memo(TransactionCE);
