@@ -38,7 +38,7 @@ import { format } from "date-fns";
 
 import { useMutation, useQueryClient } from "react-query";
 import { userSignupRequest, userUpdateRequest } from "@/api/auth";
-import { ticketCreateRequest,ticketUpdateRequest } from "@/api/ticket/index";
+import { ticketCreateRequest, ticketUpdateRequest } from "@/api/ticket/index";
 import { formAtom } from "@/jotai/atoms/formAtom";
 import { useAtom } from "jotai";
 import { Textarea } from "@/components/ui/textarea";
@@ -134,7 +134,7 @@ const TicketCE = () => {
   });
 
   const onSubmit = async (values) => {
-    console.log("Working Submit")
+    console.log("Working Submit");
     await createTicketMutation.mutate(values);
   };
 
