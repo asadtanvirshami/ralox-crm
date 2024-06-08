@@ -1,13 +1,9 @@
 "use client";
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { useDropzone } from "react-dropzone";
-import { UploadCloud } from "lucide-react";
-import Image from "next/image"; //
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,28 +22,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { Calendar } from "@/components/ui/calendar";
 import { toast } from "@/components/ui/use-toast";
 
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-
 import { useMutation, useQueryClient } from "react-query";
-import { userSignupRequest, userUpdateRequest } from "@/api/auth";
+import { saleCreateRequest } from "@/api/sale";
+
 import { formAtom } from "@/jotai/atoms/formAtom";
+import { userAtom } from "@/jotai/atoms/userAtom";
 import { useAtom } from "jotai";
 
-import { saleCreateRequest } from "@/api/sale";
-import { userAtom } from "@/jotai/atoms/userAtom";
 import SelectSale from "../../Select/Sale";
+import UploadImg from "../../UploadImg/UploadImg";
+import moment from "moment";
+import { transactionCreateRequest } from "@/api/transaction";
 
 const formSchema = z.object({
   sale_id: z.string().min(1, {
@@ -59,9 +48,10 @@ const formSchema = z.object({
   month: z.string().min(1, {
     message: "Month is required.",
   }),
-  img: z.string().min(1, {
-    message: "Image is required.",
+  acc_no: z.string().min(1, {
+    message: "Account is required.",
   }),
+  img: z.any(),
   payment_method: z.string().min(1, {
     message: "Payment is required.",
   }),
@@ -71,24 +61,24 @@ const formSchema = z.object({
   amount: z.coerce.number().min(0.01, {
     message: "Amount must be a positive number.",
   }),
-  // user_id: z.string().min(1, {
-  //   message: "User is required.",
-  // }),
+  user_id: z.string().min(1, {
+    message: "User is required.",
+  }),
   date: z.date({
     required_error: "A date of joining is required.",
   }),
 });
 
 const TransactionCE = () => {
-  const [files, setFiles] = React.useState([]);
   const [rows, setRows] = React.useState([{ amount: "", type: "" }]);
-  
+  const [files, setFiles] = React.useState([]);
+
   let [{ value, edit }] = useAtom(formAtom);
   let [{ id }] = useAtom(userAtom);
 
   const currentDate = new Date();
-  const currentDay = currentDate.getDate();
-  const currentMonth = currentDate.getMonth() + 1; 
+  const currentDay = moment().format("dddd");
+  const currentMonth = moment().format("MMMM");
 
   const queryClient = useQueryClient();
   const form = useForm({
@@ -96,13 +86,14 @@ const TransactionCE = () => {
     defaultValues: {
       day: currentDay,
       month: currentMonth,
+      date: currentDate,
       amount: 0.0,
       outstanding: 0.0,
       user_id: id || "",
+      acc_no: "",
       payment_method: "",
-      img: "",
+      img: null,
       sale_id: "",
-      date: currentDate,
     },
   });
 
@@ -144,13 +135,13 @@ const TransactionCE = () => {
     }
   }, [edit]);
 
-  const createSaleMutation = useMutation(saleCreateRequest, {
+  const createTransactionMutation = useMutation(transactionCreateRequest, {
     onSuccess: () => {
-      queryClient.invalidateQueries("sales");
+      queryClient.invalidateQueries("transactions");
       toast({
         variant: "success",
         title: "Success",
-        description: "Sale created successfully.",
+        description: "Transaction created successfully.",
         duration: 900,
       });
       value = {};
@@ -160,13 +151,13 @@ const TransactionCE = () => {
       toast({
         variant: "destructive",
         title: "Failed",
-        description: "Failed to create sale.",
+        description: "Transaction to create sale.",
         duration: 900,
       });
     },
   });
 
-  const updateUserMutation = useMutation(userUpdateRequest, {
+  const updateUserMutation = useMutation({
     onSuccess: () => {
       queryClient.invalidateQueries("sales");
       toast({
@@ -187,35 +178,8 @@ const TransactionCE = () => {
   });
 
   const onSubmit = async (values) => {
-    await createSaleMutation.mutate(values);
+    await createTransactionMutation.mutate(values);
   };
-
-  const onDrop = useCallback((acceptedFiles) => {
-    setFiles(
-      acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      )
-    );
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
-  const thumbs = files.map((file) => (
-    <div key={file.name} className="flex justify-center items-center p-2">
-      <Image
-        src={file.preview}
-        alt={file.name}
-        width={100}
-        height={100}
-        className="rounded"
-        onLoad={() => {
-          URL.revokeObjectURL(file.preview);
-        }}
-      />
-    </div>
-  ));
 
   const onEdit = async (values) => {
     const newData = {
@@ -228,6 +192,8 @@ const TransactionCE = () => {
     };
     await updateUserMutation.mutate(newData);
   };
+
+  const handleUpload = (e) => {};
 
   const handleAddRow = (newRow) => {
     setRows([...rows, newRow]);
@@ -313,7 +279,7 @@ const TransactionCE = () => {
                   />
                   <FormField
                     control={form.control}
-                    name="acc"
+                    name="acc_no"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Account or Tag</FormLabel>
@@ -332,35 +298,30 @@ const TransactionCE = () => {
                 <hr></hr>
                 <div className="">
                   <div className="container mx-auto p-4">
-                    <div
-                      {...getRootProps()}
-                      className={`border-2 border-dashed rounded-md p-4 text-center ${
-                        isDragActive
-                          ? "border-blue-400 bg-blue-100"
-                          : "border-gray-300 bg-gray-50"
-                      }`}
-                    >
-                      <input {...getInputProps()} />
-                      <UploadCloud
-                        className="mx-auto mb-4 text-gray-400"
-                        size={48}
-                      />
-                      <p className="text-gray-600">
-                        Drag & drop some files here, or click to select files
-                      </p>
-                    </div>
-                    <aside className="flex flex-wrap mt-4">{thumbs}</aside>
+                    <FormField
+                      control={form.control}
+                      name="img"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Account or Tag</FormLabel>
+                          <FormControl>
+                            <UploadImg form={form} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </div>
                 <Button
                   type="submit"
-                  disabled={
-                    createSaleMutation.isLoading
-                      ? true
-                      : false || updateUserMutation.isLoading
-                      ? true
-                      : false
-                  }
+                  // disabled={
+                  //   createTransactionMutation.isLoading
+                  //     ? true
+                  //     : false || updateUserMutation.isLoading
+                  //     ? true
+                  //     : false
+                  // }
                 >
                   Submit
                 </Button>
