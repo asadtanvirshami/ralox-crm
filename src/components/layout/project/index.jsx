@@ -2,10 +2,10 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { columns } from "@/components/Shared/Table/Leads/Columns";
+import { columns } from "@/components/Shared/Table/project/Columns";
 import DataTable from "@/components/Shared/Table/project/DataTable";
-import LeadCE from "@/components/Shared/Forms/Lead/LeadCE";
-import {useQuery } from "react-query";
+import ProjectCE from "@/components/Shared/Forms/Project/ProjectCE";
+import { useQuery } from "react-query";
 import { projectGetRequest } from "@/api/project";
 
 const Project = () => {
@@ -26,7 +26,7 @@ const Project = () => {
 
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: [
-      "leads",
+      "projects",
       query.page,
       query.pageSize,
       query.id,
@@ -55,38 +55,32 @@ const Project = () => {
     refetchOnWindowFocus: true,
   });
 
-  useEffect(() => {
-    console.log("Project here ====> ",data)
-  },[data])
-
   return (
     <Fragment>
       <>
         <div className="container flex justify-center items-center h-screen  ">
           <div className="container bg-white p-10 rounded-lg shadow-lg h-fit">
-            <h1 className="text-2xl mb-18 font-semibold">{"Lead"}</h1>
-            <Tabs defaultValue="project" className="w-full mt-5">
+            <h1 className="text-2xl mb-18 font-semibold">{"Project"}</h1>
+            <Tabs defaultValue="projects" className="w-full mt-5">
               <TabsList>
-                <TabsTrigger value="project">All Project</TabsTrigger>
+                <TabsTrigger value="projects">All Project</TabsTrigger>
                 <TabsTrigger value="registration">Create Project</TabsTrigger>
               </TabsList>
-              <TabsContent value="project">
+              <TabsContent value="projects">
                 <DataTable
-                  data={data?.length ? data : []}
+                  data={data ? data?.data : []}
                   columns={columns}
                   query={query}
                   isLoading={isLoading}
                   setQuery={setQuery}
-                  // totalCount={data?.totalCount}
                 />
               </TabsContent>
               <TabsContent value="registration">
                 <div className="w-full mt-10">
-                  {/* {<LeadCE sales={data?.data} />} */}
+                  {<ProjectCE sales={data?.data} />}
                 </div>
               </TabsContent>
             </Tabs>
-            {/* <Table map={true} editable={false} data={data?.data?.data} /> */}
           </div>
         </div>
       </>

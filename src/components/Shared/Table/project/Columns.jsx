@@ -1,27 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ComponentDialog } from "../../Dialog";
-import { Edit, Eye, Star, Trash, View } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 
 import { formAtom } from "@/jotai/atoms/formAtom";
 import { useSetAtom } from "jotai";
-
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-
 import { useMutation, useQueryClient } from "react-query";
-import { userDeleteRequest } from "@/api/auth";
-import LeadCE from "../../Forms/Lead/LeadCE";
-import { leadDeletedRequest } from "@/api/lead";
+import ProjectCE from "../../Forms/Project/ProjectCE";
+import { projectDeletedRequest } from "@/api/project";
+import { toast } from "@/components/ui/use-toast";
 
 export const columns = [
   {
@@ -54,36 +43,6 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="email"
-          onClick={() =>
-            column.toggleSorting(column.getIsSorted("email") === "asc")
-          }
-        >
-          Email
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("name")}</div>
-    ),
-  },
-  {
-    accessorKey: "phone",
-    header: "Phone",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("phone")}</div>
-    ),
-  },
-  {
     accessorKey: "title",
     header: "Title",
     cell: ({ row }) => (
@@ -91,71 +50,54 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "query",
-    header: "Query",
+    accessorKey: "description",
+    header: "Description",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("query")}</div>
+      <div className="capitalize max-w-32 max-h-4 overflow-hidden">
+        {row.getValue("description")}{" "}
+      </div>
     ),
   },
   {
-    accessorKey: "post",
-    header: "Post",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("post")}</div>,
-  },
-  {
-    accessorKey: "city",
-    header: "City",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("city")}</div>,
-  },
-  {
-    accessorKey: "country",
-    header: "Country",
+    accessorKey: "start_date",
+    header: "Start Date",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("country")}</div>
+      <div className="capitalize">
+        {row.getValue("start_date").split("T")[0]}{" "}
+      </div>
     ),
   },
   {
-    accessorKey: "source",
-    header: "Source",
+    accessorKey: "end_date",
+    header: "End Date",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("source")}</div>
+      <div className="capitalize">
+        {row.getValue("end_date").split("T")[0]}{" "}
+      </div>
     ),
   },
   {
-    accessorKey: "source_link",
-    header: "Source link",
+    accessorKey: "deadline",
+    header: "Deadline",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("source_link")}</div>
+      <div className="capitalize">
+        {row.getValue("deadline").split("T")[0]}{" "}
+      </div>
     ),
   },
   {
-    accessorKey: "potential",
-    header: "Potential",
-    cell: ({ row }) => {
-      const potential = row.getValue("potential");
-      let potentialColor;
-
-      switch (potential) {
-        case "High":
-          potentialColor = "text-green-500";
-          break;
-        case "Low":
-          potentialColor = "text-red-500";
-          break;
-        case "Medium":
-          potentialColor = "text-orange-500";
-          break;
-        default:
-          potentialColor = "text-gray-500"; // Default color for unexpected status values
-          break;
-      }
-
-      return (
-        <div className={`capitalize font-semibold ${potentialColor}`}>
-          {potential}
-        </div>
-      );
-    },
+    accessorKey: "unit_id",
+    header: "Unit Id",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("unit_id")} </div>
+    ),
+  },
+  {
+    accessorKey: "doc_link",
+    header: "Doc Link",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("doc_link")} </div>
+    ),
   },
   {
     accessorKey: "status",
@@ -211,28 +153,6 @@ export const columns = [
     },
   },
   {
-    accessorKey: "comments",
-    header: "Comments",
-    cell: ({ row }) => {
-      return (
-        <ComponentDialog trigger={<Star size={20} />}>
-          {row.getValue("comments")}
-        </ComponentDialog>
-      );
-    },
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => {
-      return (
-        <ComponentDialog trigger={<Star size={20} />}>
-          {row.getValue("description")}
-        </ComponentDialog>
-      );
-    },
-  },
-  {
     accessorKey: "edit",
     header: ({ column }) => {
       return <Button variant="Edit">Edit</Button>;
@@ -249,7 +169,7 @@ export const columns = [
           }}
           trigger={<Edit size={20} />}
         >
-          <LeadCE />
+          <ProjectCE />
         </ComponentDialog>
       );
     },
@@ -261,13 +181,13 @@ export const columns = [
     },
     cell: ({ row }) => {
       const queryClient = useQueryClient();
-      const deleteLeadMutation = useMutation(leadDeletedRequest, {
+      const deleteProjectMutation = useMutation(projectDeletedRequest, {
         onSuccess: () => {
-          queryClient.invalidateQueries("leads");
+          queryClient.invalidateQueries("projects");
           toast({
             variant: "success",
             title: "Success",
-            description: "Lead deleted successfully.",
+            description: "project deleted successfully.",
             duration: 900,
           });
         },
@@ -275,46 +195,17 @@ export const columns = [
           toast({
             variant: "destructive",
             title: "Failed",
-            description: "Failed to delete lead.",
+            description: "Failed to delete project.",
             duration: 900,
           });
         },
       });
-      console.log(row.original.id);
       return (
         <Trash
-          onClick={() => deleteLeadMutation.mutate(row.original.id)}
+          onClick={() => deleteProjectMutation.mutate(row.original.id)}
           size={20}
           className="cursor-pointer"
         />
-      );
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View Lead</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       );
     },
   },

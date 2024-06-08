@@ -164,9 +164,9 @@ const Layout = ({ children, defaultLayout, navCollapsedSize = 4 }) => {
                   title: "Projects",
                   icon: SquareGanttChart,
                   variant: `${
-                    router.pathname === "/transactions" ? "default" : "ghost"
+                    router.pathname === "/projects" ? "default" : "ghost"
                   }`,
-                  href: "/lead",
+                  href: "/projects",
                 },
                 {
                   title: "Prospects",

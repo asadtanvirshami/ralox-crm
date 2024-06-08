@@ -14,7 +14,7 @@ const projectGetRequest = async (
 ) => {
   const request = await axios
     .get(
-      `${process.env.NEXT_PUBLIC_GET_PROJECT}?page=${page}&pageSize=${pageSize}&serial=${serial}&unit_id=${unitId}&user_id=${userId}&id=${id}&type=${type}&status=${status}&month=${month}&potential=${potential}`
+      `${process.env.NEXT_PUBLIC_GET_PROJECT}?page=${page}&pageSize=${pageSize}`
     )
     .then((response) => {
       return response.data;
@@ -22,8 +22,36 @@ const projectGetRequest = async (
   return request;
 };
 
+const projectCreateRequest = async (data) => {
+  const request = await axios
+    .post(process.env.NEXT_PUBLIC_GET_PROJECT, data)
+    .then((response) => {
+      return response.data;
+    });
+  return request;
+};
 
+const projectUpdateRequest = async (data) => {
+  const request = await axios
+    .put(`${process.env.NEXT_PUBLIC_UPDATE_PROJECT}`, data)
+    .then((response) => {
+      return response.data;
+    });
+  return request;
+};
+
+const projectDeletedRequest = async (id) => {
+  const request = await axios
+    .delete(`${process.env.NEXT_PUBLIC_DELETE_PROJECT}?projectId=${id}`)
+    .then((response) => {
+      return response.data;
+    });
+  return request;
+};
 
 export {
-    projectGetRequest
+  projectGetRequest,
+  projectCreateRequest,
+  projectUpdateRequest,
+  projectDeletedRequest,
 };
