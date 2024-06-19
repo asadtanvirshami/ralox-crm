@@ -60,7 +60,7 @@ const formSchema = z.object({
 
 const TicketCE = () => {
   let [{ value, edit }] = useAtom(formAtom);
-  let [{ id }] = useAtom(userAtom);
+  let [{ id, designation }] = useAtom(userAtom);
 
   const queryClient = useQueryClient();
   const form = useForm({
@@ -134,7 +134,6 @@ const TicketCE = () => {
   });
 
   const onSubmit = async (values) => {
-    console.log("Working Submit");
     await createTicketMutation.mutate(values);
   };
 
@@ -144,10 +143,14 @@ const TicketCE = () => {
       title: value?.title,
       description: value?.description,
       approved: value?.approved,
-      approved_by: value?.approved_by,
+      approved_by: designation == "Manager" ? id : value?.approved_by,
       closed: value?.closed,
       ...values,
     };
+
+    if (newData?.approved) {
+      newData.approved_by = designation == "Manager" ? id : value?.approved_by;
+    }
     await updateTicketMutation.mutate(newData);
   };
 
@@ -199,6 +202,30 @@ const TicketCE = () => {
                     )}
                   />
                 </div>
+                {edit == true && designation == "Manager" && (
+                  <div className="grid grid-cols-1 space-x-3">
+                    <FormField
+                      control={form.control}
+                      name="approved"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-center space-x-2">
+                            <FormLabel className="mt-1">Approved</FormLabel>
+                            <FormControl>
+                              <Switch
+                                id="approved"
+                                {...field}
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+
                 <Button
                   type="submit"
                   // disabled={
