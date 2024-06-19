@@ -156,24 +156,24 @@ const Layout = ({ children, defaultLayout, navCollapsedSize = 4 }) => {
                   title: "Transactions",
                   icon: ArrowRightLeft,
                   variant: `${
-                    router.pathname === "/transactions" ? "default" : "ghost"
+                    router.pathname === "/transaction" ? "default" : "ghost"
                   }`,
-                  href: "/lead",
+                  href: "/transaction",
                 },
-                {
-                  title: "Projects",
-                  icon: SquareGanttChart,
-                  variant: `${
-                    router.pathname === "/projects" ? "default" : "ghost"
-                  }`,
-                  href: "/projects",
-                },
-                {
-                  title: "Prospects",
-                  icon: UserSquare,
-                  variant: "ghost",
-                  href: "/lead",
-                },
+                // {
+                //   title: "Projects",
+                //   icon: SquareGanttChart,
+                //   variant: `${
+                //     router.pathname === "/projects" ? "default" : "ghost"
+                //   }`,
+                //   href: "/projects",
+                // },
+                // {
+                //   title: "Prospects",
+                //   icon: UserSquare,
+                //   variant: "ghost",
+                //   href: "/lead",
+                // },
                 {
                   title: "Web Admin",
                   icon: Globe,

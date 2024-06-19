@@ -46,7 +46,7 @@ export const columns = [
     cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
   },
   {
-    accessorKey: "User",
+    accessorKey: "amount",
     header: ({ column }) => {
       return (
         <Button

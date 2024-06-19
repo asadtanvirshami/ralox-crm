@@ -5,7 +5,8 @@ import { useRouter } from "next/router";
 import Users from "@/components/layout/user";
 
 import { verifyTokenRequest } from "@/api/auth";
-const users = ({ sessionData }) => {
+
+const User = ({ sessionData }) => {
   const router = useRouter();
 
   // React.useEffect(() => {
@@ -20,7 +21,7 @@ const users = ({ sessionData }) => {
   );
 };
 
-export default users;
+export default User;
 
 // export const getServerSideProps = async ({ req, res }) => {
 //   // Fetch data from external API

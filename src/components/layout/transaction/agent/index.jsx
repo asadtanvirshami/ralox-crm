@@ -4,28 +4,58 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { userDeleteRequest, userGetRequest } from "@/api/auth";
+import { transactionGetRequest } from "@/api/transaction";
 import { toast } from "@/components/ui/use-toast";
-import DataTable from "@/components/Shared/Table/Users/DataTable";
-import { columns } from "@/components/Shared/Table/Users/Columns";
+import DataTable from "@/components/Shared/Table/Transaction/DataTable";
+import { columns } from "@/components/Shared/Table/Transaction/Columns";
 import TransactionCE from "@/components/Shared/Forms/Transaction/TransactionCE";
 
 const Agent = () => {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState({
-    role: "",
-    name: "",
-    email: "",
+    id: "",
+    user_id: "",
+    serial: "",
+    type: "",
+    day: "",
+    month: "",
+    date: "",
+    unit_id: "",
     page: 1,
     pageSize: 8,
   });
 
   const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["users", query.page, query.pageSize, query.email, query.name],
+    queryKey: [
+      "transactions",
+      query.page,
+      query.pageSize,
+      query.id,
+      query.user_id,
+      query.serial,
+      query.type,
+      query.day,
+      query.month,
+      query.date,
+      query.unit_id,
+    ],
     queryFn: () =>
-      userGetRequest(query.page, query.pageSize, query.email, query.name),
+      transactionGetRequest(
+        query.page,
+        query.pageSize,
+        query.id,
+        query.user_id,
+        query.serial,
+        query.type,
+        query.day,
+        query.month,
+        query.date,
+        query.unit_id,
+      ),
     refetchInterval: false,
     refetchOnWindowFocus: true,
   });
+
 
   const deleteUserMutation = useMutation(userDeleteRequest, {
     onSuccess: () => {
@@ -56,7 +86,9 @@ const Agent = () => {
             <Tabs defaultValue="users" className="w-full mt-5">
               <TabsList>
                 <TabsTrigger value="users">All Transactions</TabsTrigger>
-                <TabsTrigger value="registration">Create Transaction</TabsTrigger>
+                <TabsTrigger value="registration">
+                  Create Transaction
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="users">
                 <DataTable

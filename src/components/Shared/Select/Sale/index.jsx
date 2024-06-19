@@ -32,7 +32,7 @@ import { CommandList } from "cmdk";
 import { Input } from "@/components/ui/input";
 import { saleGetRequest } from "@/api/sale";
 
-const SelectSale = ({ form, name, checkList, isCheck, setIsCheck }) => {
+const SelectSale = ({ form, serial, name }) => {
   const [value, setValue] = React.useState("");
   const [query, setQuery] = React.useState({
     id: "",
@@ -101,6 +101,13 @@ const SelectSale = ({ form, name, checkList, isCheck, setIsCheck }) => {
     };
   }, []); // Empty dependency array to add and remove the listener only once
 
+  React.useEffect(() => {
+    if (form?.getValues("sale_id") !== null && serial !== null) {
+      setValue(serial);
+      return;
+    }
+  }, []);
+
   return (
     <FormField
       control={form.control}
@@ -134,13 +141,13 @@ const SelectSale = ({ form, name, checkList, isCheck, setIsCheck }) => {
                   <CommandGroup onScroll={handleScroll}>
                     {sales.map((item) => {
                       return (
-                        <CommandList>
+                        <CommandList key={item.id}>
                           <CommandItem
                             onSelect={() => {
                               form.setValue("sale_id", item.id);
                               setValue(item.serial);
                             }}
-                            value={item.id}
+                            value={item.id || form.getValues("sale_id")}
                             key={item.id}
                           >
                             {item.serial}

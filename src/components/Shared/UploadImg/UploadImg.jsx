@@ -3,8 +3,21 @@ import { UploadCloud } from "lucide-react";
 import Image from "next/image";
 import React, { Fragment, useCallback, useState } from "react";
 
-const UploadImg = ({ form }) => {
+const UploadImg = ({ form, img }) => {
   const [files, setFiles] = useState([]);
+
+  React.useEffect(() => {
+    if (form?.getValues("img") !== null) {
+      setFiles([
+        {
+          name: "ScreenShot",
+          preview:
+            form?.getValues("img") !== null ? form?.getValues("img") : "",
+        },
+      ]);
+      return;
+    }
+  }, []);
 
   const thumbs = files.map((file) => (
     <div key={file.name} className="flex justify-center items-center p-2">
@@ -35,7 +48,6 @@ const UploadImg = ({ form }) => {
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
   return (
     <Fragment>
       <div>
@@ -58,6 +70,7 @@ const UploadImg = ({ form }) => {
             Drag & drop some files here, or click to select files
           </p>
         </div>
+        {/* <Image src={form.getValues("img") ? form.getValues("img")  : ""} alt="ss" height={100} width={100} /> */}
         <aside className="flex flex-wrap mt-4">{thumbs}</aside>
       </div>
     </Fragment>

@@ -64,6 +64,7 @@ const formSchema = z.object({
   user_id: z.string().min(1, {
     message: "User is required.",
   }),
+  time: z.string(),
   date: z.date({
     required_error: "A date of joining is required.",
   }),
@@ -79,6 +80,7 @@ const TransactionCE = () => {
   const currentDate = new Date();
   const currentDay = moment().format("dddd");
   const currentMonth = moment().format("MMMM");
+  const formattedTime = moment(currentDate).format("HH:mm:ss");
 
   const queryClient = useQueryClient();
   const form = useForm({
@@ -87,6 +89,7 @@ const TransactionCE = () => {
       day: currentDay,
       month: currentMonth,
       date: currentDate,
+      time: formattedTime,
       amount: 0.0,
       outstanding: 0.0,
       user_id: id || "",
@@ -111,26 +114,16 @@ const TransactionCE = () => {
     if (edit) {
       form.reset({
         id: value?.id,
-        name: value?.name || "",
-        email: value?.email || "",
-        designation: value?.ProfileInfo?.designation || "",
-        phone: value?.ProfileInfo?.phone || "",
-        has_salary: value?.has_salary || false,
-        has_commission: value?.has_commission || false,
-        has_allowance: value?.has_allowance || false,
-        allowance_amount: value?.Allowance?.amount || null,
-        allowance_type: value?.Allowance?.allowance_type || "",
-        salary_amount: value?.Salary?.amount || null,
-        commission_rate: value?.CommissionRate?.rate || null,
-        authorized: value?.ProfileInfo?.authorized || false,
-        warning: value?.ProfileInfo?.warning || false,
-        password: value?.password || "",
-        user: value?.role || "",
-        blocked: value?.blocked || false,
-        address: value?.ProfileInfo?.address || "",
-        joined: value?.ProfileInfo?.joined
-          ? new Date(value.ProfileInfo.joined)
-          : null,
+        sale_id: value?.sale_id,
+        time: value?.time,
+        img: value?.img,
+        month: value?.month,
+        day: value?.day,
+        payment_method: value?.payment_method,
+        outstanding: value?.outstanding,
+        acc_no: value?.acc_no,
+        amount: value?.amount,
+        date: value?.date ? new Date(value.date) : null,
       });
     }
   }, [edit]);
@@ -159,7 +152,7 @@ const TransactionCE = () => {
 
   const updateUserMutation = useMutation({
     onSuccess: () => {
-      queryClient.invalidateQueries("sales");
+      queryClient.invalidateQueries("transactions");
       toast({
         variant: "success",
         title: "Success",
@@ -244,7 +237,11 @@ const TransactionCE = () => {
                       </FormItem>
                     )}
                   />
-                  <SelectSale form={form} name={"sale_id"} />
+                  <SelectSale
+                    form={form}
+                    serial={value?.Sale?.serial || null}
+                    name={"sale_id"}
+                  />
                 </div>
                 <div className="grid grid-cols-3 space-x-3 ">
                   <FormField
@@ -303,7 +300,7 @@ const TransactionCE = () => {
                       name="img"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Account or Tag</FormLabel>
+                          <FormLabel>Confirmation Screenshot</FormLabel>
                           <FormControl>
                             <UploadImg form={form} />
                           </FormControl>

@@ -6,10 +6,12 @@ import {
   attendanceCheckInRequest,
   attendanceUpdateRequest,
 } from "@/api/attendance";
+import { Loader2 } from "lucide-react";
 
 const InfoSection = () => {
   const [user, setUserData] = React.useState(null);
   const [isCheckedIn, setIsCheckedIn] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     async function getUserCookie() {
@@ -50,6 +52,7 @@ const InfoSection = () => {
 
   const onSubmit = async () => {
     try {
+      setLoading(true);
       const currentDate = new Date();
       const formattedTime = moment(currentDate).format("HH:mm:ss");
 
@@ -63,8 +66,9 @@ const InfoSection = () => {
       };
       // Call the check-in API
       const response = await attendanceCheckInRequest(data);
-      setIsCheckedIn(true);
       if (response.success) {
+        setIsCheckedIn(true);
+        setLoading(false);
         const userData = {
           ...user,
           lastCheckedIn: formattedTime,
@@ -79,6 +83,7 @@ const InfoSection = () => {
   };
 
   const onUpdate = async () => {
+    setLoading(true);
     try {
       const currentDate = new Date();
       const formattedTime = moment(currentDate).format("HH:mm:ss");
@@ -91,15 +96,18 @@ const InfoSection = () => {
         lng: coordinates.lng,
         lat: coordinates.lat,
       };
-      await attendanceUpdateRequest(data);
-      setIsCheckedIn(false);
-      const userData = {
-        ...user,
-        lastCheckedIn: null,
-        checkedIn: false,
-        attendenceId: null,
-      };
-      Cookies.set("user", JSON.stringify(userData));
+      const response = await attendanceUpdateRequest(data);
+      if (response.success) {
+        setLoading(false);
+        setIsCheckedIn(false);
+        const userData = {
+          ...user,
+          lastCheckedIn: null,
+          checkedIn: false,
+          attendenceId: null,
+        };
+        Cookies.set("user", JSON.stringify(userData));
+      }
 
       // Call the check-in API
     } catch (error) {
@@ -129,16 +137,22 @@ const InfoSection = () => {
           </div>
           <div className="flex float-right justify-end  ">
             <Button
-              // disabled={isCheckInDisabled}
               // onClick={isCheckInDisabled ? onSubmit : onUpdate}
+              disabled={loading}
               onClick={isCheckedIn ? onUpdate : onSubmit}
-              className={` ${
+              className={`${
                 isCheckedIn
                   ? "bg-red-500 opacity-100 rounded-full hover:bg-red-500"
                   : "bg-green-500 opacity-100 rounded-full hover:bg-green-500"
               }`}
             >
-              {isCheckedIn ? "Check-Out" : "Check In"}
+              {loading ? (
+                <Loader2 color="white" className=" animate-spin" />
+              ) : isCheckedIn ? (
+                "Check-Out"
+              ) : (
+                "Check In"
+              )}
             </Button>
           </div>
         </div>

@@ -13,7 +13,4 @@ export const userAtom = atom(initialUserData, (get, set, newUserData) => {
 
   // Update cookies
   Cookies.set("user", newUserData);
-
-  // Update local storage
-  localStorage.setItem("user", JSON.stringify(newUserData));
 });
