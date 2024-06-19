@@ -109,9 +109,9 @@ const Layout = ({ children, defaultLayout, navCollapsedSize = 4 }) => {
                   title: "Users",
                   icon: UsersRound,
                   variant: `${
-                    router.pathname === "/users" ? "default" : "ghost"
+                    router.pathname === "/user" ? "default" : "ghost"
                   }`,
-                  href: "/users",
+                  href: "/user",
                 },
               ]}
             />
