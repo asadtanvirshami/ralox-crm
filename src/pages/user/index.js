@@ -2,11 +2,11 @@ import React from "react";
 import Cookies from "cookies";
 import { useRouter } from "next/router";
 
-import Attendances from "../../src/components/layout/attendance/";
+import Users from "@/components/layout/user";
 
 import { verifyTokenRequest } from "@/api/auth";
 
-const Attendance = ({ sessionData }) => {
+const User = ({ sessionData }) => {
   const router = useRouter();
 
   React.useEffect(() => {
@@ -14,15 +14,14 @@ const Attendance = ({ sessionData }) => {
       router.push("/auth");
     }
   }, []);
-
   return (
-    <React.Fragment>
-      <Attendances />
-    </React.Fragment>
+    <>
+      <Users />
+    </>
   );
 };
 
-export default Attendance;
+export default User;
 
 export const getServerSideProps = async ({ req, res }) => {
   // Fetch data from external API

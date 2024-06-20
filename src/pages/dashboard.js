@@ -2,14 +2,14 @@ import React from "react";
 import Cookies from "cookies";
 import { useRouter } from "next/router";
 
-import Attendances from "../../src/components/layout/attendance/";
-
 import { verifyTokenRequest } from "@/api/auth";
+import Portal from "@/components/layout/dashboard/portal";
 
-const Attendance = ({ sessionData }) => {
+const Dashboard = ({ sessionData }) => {
   const router = useRouter();
 
   React.useEffect(() => {
+    console.log();
     if (sessionData.success === false) {
       router.push("/auth");
     }
@@ -17,12 +17,12 @@ const Attendance = ({ sessionData }) => {
 
   return (
     <React.Fragment>
-      <Attendances />
+      <Portal />
     </React.Fragment>
   );
 };
 
-export default Attendance;
+export default Dashboard;
 
 export const getServerSideProps = async ({ req, res }) => {
   // Fetch data from external API

@@ -2,7 +2,7 @@ import React, { memo } from "react";
 
 import Login from "@/components/layout/auth/login/login";
 
-const auth = () => {
+const Auth = () => {
   return (
     <div
       data-cy="main-grid"
@@ -31,4 +31,4 @@ const auth = () => {
   );
 };
 
-export default memo(auth);
+export default memo(Auth);

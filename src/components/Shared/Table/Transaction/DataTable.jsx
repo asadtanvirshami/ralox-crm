@@ -16,6 +16,9 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -27,13 +30,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Calendar } from "@/components/ui/calendar";
+import { useAtom } from "jotai";
+import { unitAtom } from "@/jotai/atoms/unitAtom";
 
 import { MoonLoader } from "react-spinners";
-import { Download, FilterX } from "lucide-react";
+import { FilterX } from "lucide-react";
 
 import moment from "moment";
-import { CSVDownload, CSVLink } from "react-csv";
+import { Calendar } from "@/components/ui/calendar";
 
 const DataTable = ({
   columns,
@@ -47,6 +51,38 @@ const DataTable = ({
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [unitFilters, setUnitFilter] = React.useState([]);
+
+  const paymentMethod = [
+    { id: 0, name: "PayPal" },
+    { id: 1, name: "Cashapp" },
+    { id: 2, name: "Bank-Account" },
+    { id: 3, name: "Stripe" },
+    { id: 4, name: "Venmo" },
+    { id: 5, name: "Skrill" },
+    { id: 6, name: "Wire-Transfer" },
+  ];
+
+  const month = [
+    { id: 0, month: "January" },
+    { id: 1, month: "Feburary" },
+    { id: 2, month: "March" },
+    { id: 3, month: "April" },
+    { id: 4, month: "May" },
+    { id: 5, month: "June" },
+    { id: 6, month: "July" },
+    { id: 7, month: "August" },
+    { id: 8, month: "September" },
+    { id: 9, month: "October" },
+    { id: 10, month: "November" },
+    { id: 11, month: "December" },
+  ];
+
+  let [unit] = useAtom(unitAtom);
+
+  React.useEffect(() => {
+    setUnitFilter(unit);
+  }, []);
 
   const table = useReactTable({
     data,
@@ -116,7 +152,14 @@ const DataTable = ({
   const handleReset = () => {
     setQuery({
       ...query,
-      name: "",
+      serial: "",
+      unit_id: "",
+      user_id: "",
+      id: "",
+      acc_no: "",
+      payment_method: "",
+      type: "",
+      month: "",
       date: "",
     });
   };
@@ -128,14 +171,18 @@ const DataTable = ({
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 space-x-2">
         <Input
-          placeholder="Filter Name..."
-          value={query.name}
-          onChange={(event) => setQuery({ ...query, name: event.target.value })}
-          className="max-w-sm"
+          placeholder="Filter serial"
+          value={`${query.serial}`}
+          onChange={(event) =>
+            setQuery({
+              ...query,
+              serial: event.target.value,
+            })
+          }
+          className="max-w-[8rem]"
         />
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -165,6 +212,70 @@ const DataTable = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-2">
+              Payment Method <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {paymentMethod && (
+              <>
+                {paymentMethod.map((item) => {
+                  return (
+                    <DropdownMenuRadioGroup
+                      className="cursor-pointer"
+                      key={item.id}
+                      value={item.id}
+                      onValueChange={(event) =>
+                        setQuery({
+                          ...query,
+                          type: item.name,
+                        })
+                      }
+                    >
+                      <DropdownMenuRadioItem value={item.name}>
+                        {item.name}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  );
+                })}
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-2">
+              Month <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {month && (
+              <>
+                {month.map((item) => {
+                  return (
+                    <DropdownMenuRadioGroup
+                      className="cursor-pointer"
+                      key={item.id}
+                      value={item.id}
+                      onValueChange={(event) =>
+                        setQuery({
+                          ...query,
+                          month: item.month,
+                        })
+                      }
+                    >
+                      <DropdownMenuRadioItem value={item.month}>
+                        {item.month}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  );
+                })}
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-2">
               Date <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -179,10 +290,6 @@ const DataTable = ({
         </DropdownMenu>
         <Button variant="outline" className="ml-2">
           <FilterX onClick={handleReset} />
-        </Button>
-        <Button variant="outline" className="ml-2 space-x-2">
-          <CSVLink data={data}>Download</CSVLink>
-          <Download size={17} />
         </Button>
       </div>
       <div className="rounded-md border">

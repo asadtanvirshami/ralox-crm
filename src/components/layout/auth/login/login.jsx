@@ -36,10 +36,11 @@ const Login = () => {
       });
 
       let jwtToken = jwt_decode(response?.data?.token);
-      
+
       const userCache = {
         id: jwtToken?.id,
         name: jwtToken?.name,
+        role: jwtToken?.role,
         email: jwtToken?.email,
         designation: jwtToken?.designation,
         unit: jwtToken?.unit,
@@ -47,7 +48,7 @@ const Login = () => {
         createdAt: jwtToken?.createdAt,
         updatedAt: jwtToken?.updatedAt,
         checkedIn: false,
-        isAdmin: false,
+        isAdmin: jwtToken?.role === "admin" ? true : false,
         lastCheckedIn: null,
       };
 

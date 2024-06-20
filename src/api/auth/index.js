@@ -23,10 +23,10 @@ const userSignupRequest = (data) => {
   return request;
 };
 
-const userGetRequest = async (page, pageSize, email, name, serial, unitId) => {
+const userGetRequest = async (page, pageSize, email, name, serial, unitId, userId) => {
   const request = await axios
     .get(
-      `${process.env.NEXT_PUBLIC_GET_ALL_USERS}?page=${page}&pageSize=${pageSize}&email=${email}&name=${name}&serial=${serial}&unitId=${unitId}`
+      `${process.env.NEXT_PUBLIC_GET_ALL_USERS}?page=${page}&pageSize=${pageSize}&email=${email}&name=${name}&serial=${serial}&unitId=${unitId}&userId=${userId}`
     )
     .then((response) => {
       return response.data;
