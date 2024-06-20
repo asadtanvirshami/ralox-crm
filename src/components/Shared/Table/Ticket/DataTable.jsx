@@ -11,8 +11,9 @@ import { useMutation, useQueryClient } from "react-query";
 import { ticketDeleteRequest } from "@/api/ticket";
 import { toast } from "@/components/ui/use-toast";
 import { MoonLoader } from "react-spinners";
+import { Button } from "@/components/ui/button";
 
-const DataTable = ({ data, isLoading, totalCount }) => {
+const DataTable = ({ data, isLoading, totalCount, handlePage, page }) => {
   const setState = useSetAtom(formAtom);
   const queryClient = useQueryClient();
 
@@ -35,6 +36,16 @@ const DataTable = ({ data, isLoading, totalCount }) => {
       });
     },
   });
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      handlePage(page - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    handlePage(page + 1);
+  };
   return (
     <div className="w-full mt-3">
       {isLoading && (
@@ -43,25 +54,18 @@ const DataTable = ({ data, isLoading, totalCount }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-scroll h-[70vh]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-scroll ">
         {data?.map((val, ind) => {
           return (
             <div
               key={ind}
-              className="p-4 border-2 border-[#e4e4e7] rounded bg-[#f4f4f5] max-h-[180px]"
+              className="p-4 border-2 border-[#e4e4e7] rounded bg-[#f4f4f5] "
             >
               <div className="flex justify-between items-center">
                 <h1 className="text-xl font-semibold text-[#09090B] mb-2">
                   {val?.title}
                   <span className="text-xs ml-2">({val?.serial})</span>
                 </h1>
-                <span
-                  className={`text-xs border-2 ${
-                    val?.approved ? "border-green-500" : "border-red-500"
-                  } rounded-3xl p-1`}
-                >
-                  Approved
-                </span>
               </div>
               <p className="h-[68px] overflow-hidden text-[#09090B]">
                 {val?.description}
@@ -94,6 +98,25 @@ const DataTable = ({ data, isLoading, totalCount }) => {
             </div>
           );
         })}
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground"></div>
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePreviousPage}
+            disabled={page === 1}
+          >
+            Previous
+          </Button>
+          <Button variant="outline" size="sm">
+            {page}
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleNextPage}>
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

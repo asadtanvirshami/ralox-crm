@@ -7,9 +7,10 @@ import DataTable from "@/components/Shared/Table/Ticket/DataTable";
 import TicketCE from "@/components/Shared/Forms/Ticket/TicketCE";
 import { ticketGetRequest, ticketDeleteRequest } from "@/api/ticket";
 
-
 const AgentPanel = () => {
   const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+  const [approved, setApproved] = useState();
   const [query, setQuery] = useState({
     role: "",
     name: "",
@@ -18,14 +19,17 @@ const AgentPanel = () => {
     pageSize: 8,
   });
 
+  const handlePage = (val) => {
+    setPage(val);
+  };
+
   const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["ticket"],
+    queryKey: ["ticket", page, approved],
     queryFn: () =>
-      ticketGetRequest(),
+      ticketGetRequest(page, 9, approved != undefined ? approved : ""),
     refetchInterval: false,
     refetchOnWindowFocus: true,
   });
-
 
   return (
     <Fragment>
@@ -35,7 +39,18 @@ const AgentPanel = () => {
             <h1 className="text-2xl mb-18 font-semibold">{"Ticket"}</h1>
             <Tabs defaultValue="ticket" className="w-full mt-5">
               <TabsList>
-                <TabsTrigger value="ticket">All Ticket</TabsTrigger>
+                <TabsTrigger value="ticket"
+                  onClick={() => setApproved(undefined)}
+                >All Ticket</TabsTrigger>
+                <TabsTrigger
+                  value="approved"
+                  onClick={() => setApproved(true)}
+                >
+                  Approved Ticket
+                </TabsTrigger>
+                <TabsTrigger value="unapproved" 
+                  onClick={() => setApproved(false)}
+                >Un Approved Ticket</TabsTrigger>
                 <TabsTrigger value="registration">Create Ticket</TabsTrigger>
               </TabsList>
               <TabsContent value="ticket">
@@ -43,6 +58,26 @@ const AgentPanel = () => {
                   data={data ? data?.data : []}
                   isLoading={isLoading}
                   totalCount={data?.totalCount}
+                  handlePage={handlePage}
+                  page={page}
+                />
+              </TabsContent>
+              <TabsContent value="approved">
+                <DataTable
+                  data={data ? data?.data : []}
+                  isLoading={isLoading}
+                  totalCount={data?.totalCount}
+                  handlePage={handlePage}
+                  page={page}
+                />
+              </TabsContent>
+              <TabsContent value="unapproved">
+                <DataTable
+                  data={data ? data?.data : []}
+                  isLoading={isLoading}
+                  totalCount={data?.totalCount}
+                  handlePage={handlePage}
+                  page={page}
                 />
               </TabsContent>
               <TabsContent value="registration">

@@ -20,9 +20,9 @@ const ticketUpdateRequest = (data) => {
   return request;
 };
 
-const ticketGetRequest = () => {
+const ticketGetRequest = (page,pageSize,approved) => {
   const request = axios
-    .get(process.env.NEXT_PUBLIC_GET_TICKET)
+    .get(`${process.env.NEXT_PUBLIC_GET_TICKET}?page=${page}&pageSize=${pageSize}&approved=${approved}`)
     .then((response) => {
       return response.data;
     });
