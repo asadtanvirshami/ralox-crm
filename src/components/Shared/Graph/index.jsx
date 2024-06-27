@@ -43,7 +43,7 @@ const CustomTooltip = () => (
   </div>
 );
 
-const Graph = (props) => {
+const Graph = ({ saleGraphValue }) => {
   return (
     <div className="flex p-4 h-full flex-col shadow-lg rounded-lg">
       <div className="">
@@ -62,7 +62,7 @@ const Graph = (props) => {
 
       <div className="flex-grow">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart width={500} height={300} data={graphData}>
+          <LineChart width={500} height={300} data={saleGraphValue}>
             <defs>
               <linearGradient id="paint0_linear" x1="0" y1="0" x2="1" y2="0">
                 <stop stopColor="#ED213A" />
@@ -75,7 +75,7 @@ const Graph = (props) => {
               stroke="black"
             />
             <XAxis
-              dataKey="name"
+              dataKey="month"
               axisLine={false}
               tickLine={false}
               tickMargin={10}
@@ -83,17 +83,8 @@ const Graph = (props) => {
             <YAxis axisLine={false} tickLine={false} tickMargin={10} />
             <Tooltip content={<CustomTooltip />} cursor={false} />
             <Line
-              activeDot={false}
               type="monotone"
-              dataKey="expectedRevenue"
-              stroke="lightgreen"
-              strokeWidth="3"
-              dot={false}
-              strokeDasharray="8 8"
-            />
-            <Line
-              type="monotone"
-              dataKey="revenue"
+              dataKey="total_sales"
               stroke="lightgreen"
               strokeWidth="4"
               dot={false}

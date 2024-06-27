@@ -47,9 +47,19 @@ const leadDeletedRequest = async (id) => {
   return request;
 };
 
+const saleGetByFilterRequest = async (filter) => {
+  const request = await axios
+    .get(`${process.env.NEXT_PUBLIC_GET_SALE_BY_FILTER}?filter=${filter}`)
+    .then((response) => {
+      return response.data;
+    });
+  return request;
+};
+
 export {
   saleGetRequest,
   saleCreateRequest,
   leadUpdateRequest,
   leadDeletedRequest,
+  saleGetByFilterRequest,
 };
